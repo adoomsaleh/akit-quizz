@@ -2,95 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AKit Quiz</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-*{box-sizing:border-box;font-family:'Poppins',sans-serif;margin:0;padding:0;}
-body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;display:flex;justify-content:center;align-items:center;height:100vh;transition:background 0.6s;overflow:hidden;}
-.container{width:95%;max-width:900px;text-align:center;position:relative;}
-h1{font-size:3rem;margin-bottom:20px;text-shadow:0 0 10px #00ccff;}
-button{margin:8px;padding:12px 22px;font-size:1.2rem;border:none;border-radius:12px;background:#00aaff;color:white;cursor:pointer;transition:0.3s;}
-button:hover{transform:scale(1.1);background:#00ccff;}
-input{padding:10px;margin:5px;border-radius:10px;border:none;outline:none;width:60%;}
-.question{font-size:1.6rem;margin:20px 0;}
-.options{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;}
-.feedback{font-size:1.4rem;margin:10px 0;opacity:0;transition:0.3s;transform:scale(0.9);}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* BASE STYLES */
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
+body{height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb);
+  background-size: 600% 600%; animation: gradientBG 20s ease infinite;
+  color:white; transition: background 0.5s;
+}
+@keyframes gradientBG{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.container{width:90%;max-width:900px;text-align:center;position:relative;padding:30px;border-radius:20px;background:rgba(0,0,0,0.25);box-shadow:0 0 20px rgba(0,0,0,0.5);overflow:hidden;}
+h1{font-size:3rem;margin-bottom:20px;letter-spacing:1px;text-shadow:0 0 8px #fff;}
+
+button{padding:12px 25px;font-size:1.2rem;border:none;border-radius:12px;background:#00aaff;color:white;cursor:pointer;margin:8px;transition:0.3s;}
+button:hover{transform:scale(1.1);background:#00ccff;box-shadow:0 0 12px #00ccff;}
+
+input{padding:12px;margin:6px;border-radius:10px;border:none;outline:none;font-size:1rem;}
+
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
+
+.feedback{font-size:1.3rem;margin:10px 0;opacity:0;transform:scale(0.9);transition:0.3s;}
 .feedback.show{opacity:1;transform:scale(1);}
-.timer{margin-top:5px;font-size:1.1rem;}
-.progress{height:12px;background:rgba(255,255,255,0.2);border-radius:6px;margin:15px 0;overflow:hidden;}
-.bar{height:100%;width:0%;background:#00ccff;transition:width 0.3s;}
-.menu,.playerSetup,.modeSelect{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeIn 1s;}
-.leaderboard{background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;margin-top:12px;}
-.lb-row{display:flex;justify-content:space-between;padding:4px 0;}
+
+.timer{margin-top:5px;font-size:1rem;}
+.progress{height:12px;background:rgba(255,255,255,0.2);border-radius:6px;overflow:hidden;margin:15px 0;}
+.bar{height:100%;width:0%;background:#00ffea;transition:width 0.3s;}
+
+.menu,.playerSetup,.modeSelect{display:flex;flex-direction:column;align-items:center;gap:12px;transition:0.5s;opacity:1;}
+.hidden{opacity:0;pointer-events:none;transition:0.5s;}
+
 .turnIndicator{margin-top:10px;font-size:1.2rem;color:#ffd700;}
 .comboFire{color:#ffdd00;font-weight:bold;margin-top:5px;}
 .achievements{margin-top:10px;font-size:1rem;color:#00ffea;}
+
 .confetti{position:fixed;width:100%;height:100%;pointer-events:none;top:0;left:0;z-index:999;font-size:2rem;}
-.fadeScreen{animation:fadeScreen 0.5s;}
-@keyframes fadeIn{0%{opacity:0;transform:translateY(-20px);}100%{opacity:1;transform:translateY(0);}}
-@keyframes fadeScreen{0%{opacity:0;}100%{opacity:1;}}
+
+.musicControl{position:absolute;top:15px;right:20px;background:#00aaff;padding:8px 15px;border-radius:12px;font-size:1rem;cursor:pointer;z-index:10;}
+
+.bubble{position:absolute;border-radius:50%;opacity:0.5;animation:bubbleMove linear infinite;pointer-events:none;}
+@keyframes bubbleMove{0%{transform:translateY(0);}100%{transform:translateY(-120vh);}}
+
+@media(max-width:600px){
+  h1{font-size:2rem;}
+  button{font-size:1rem;padding:10px 20px;}
+  input{font-size:0.9rem;padding:10px;}
+}
 </style>
 </head>
 <body>
+
 <div class="container">
+  <div class="musicControl" id="musicToggle">Play Music</div>
+  <h1>AKit Quiz</h1>
 
-<h1>AKit Quiz 🎵</h1>
+  <!-- MODE SELECTION -->
+  <div class="modeSelect" id="modeSelect">
+    <p>Select Mode</p>
+    <button id="soloBtn">Solo Mode</button>
+    <button id="multiBtn">Multiplayer Mode</button>
+  </div>
 
-<div class="modeSelect" id="modeSelect">
-  <p>Select your mode:</p>
-  <button id="soloBtn">Solo Mode</button>
-  <button id="multiBtn">Multiplayer Mode</button>
-  <button id="playMusicBtn">Play Music</button>
+  <!-- PLAYER SETUP -->
+  <div class="playerSetup hidden" id="playerSetup">
+    <p>Enter Player Names</p>
+    <input id="p1" placeholder="Player 1">
+    <input id="p2" placeholder="Player 2">
+    <input id="p3" placeholder="Player 3">
+    <input id="p4" placeholder="Player 4">
+    <button id="startBtn">Next</button>
+  </div>
+
+  <!-- MENU -->
+  <div class="menu hidden" id="menu">
+    <p>Select Quiz Topic</p>
+    <button class="menu-btn" id="akitBtn">AKit Quiz</button>
+    <button class="menu-btn" id="planetBtn">Planet Quiz</button>
+    <button class="menu-btn" id="techBtn">Technology Quiz</button>
+    <button class="menu-btn" id="animalsBtn">Animals Quiz</button>
+    <button class="menu-btn" id="mathBtn">Math Quiz</button>
+    <button class="menu-btn" id="triviaBtn">Random Trivia</button>
+    <button class="menu-btn" id="musicBtn">Music Quiz</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
+    <div class="turnIndicator" id="turnIndicator"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="timer" id="timer"></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="comboFire" id="comboFire"></div>
+    <div class="leaderboard" id="leaderboard"></div>
+    <div class="achievements" id="achievements"></div>
+    <button id="nextBtn" style="display:none;margin-top:10px;"></button>
+  </div>
+
+  <!-- END -->
+  <div class="end hidden" id="end">
+    <h2>Quiz Finished!</h2>
+    <div class="leaderboard" id="finalLeaderboard"></div>
+    <button id="endMenuBtn">Back to Menu</button>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
 </div>
 
-<div class="playerSetup" id="playerSetup" style="display:none">
-  <p>Enter player names:</p>
-  <input id="p1" placeholder="Player 1">
-  <input id="p2" placeholder="Player 2">
-  <input id="p3" placeholder="Player 3">
-  <input id="p4" placeholder="Player 4">
-  <button id="startBtn">Next</button>
-</div>
-
-<div class="menu" id="menu" style="display:none">
-  <p>Select a quiz topic:</p>
-  <button class="menu-btn" id="akitBtn">AKit Quiz</button>
-  <button class="menu-btn" id="planetBtn">Planet Quiz</button>
-  <button class="menu-btn" id="techBtn">Technology Quiz</button>
-  <button class="menu-btn" id="animalsBtn">Animals Quiz</button>
-  <button class="menu-btn" id="mathBtn">Math Quiz</button>
-  <button class="menu-btn" id="triviaBtn">Trivia Quiz</button>
-  <button class="menu-btn" id="musicBtn">Music Quiz</button>
-</div>
-
-<div id="quiz" style="display:none">
-  <div class="turnIndicator" id="turnIndicator"></div>
-  <div class="question" id="question"></div>
-  <div class="options" id="options"></div>
-  <div class="feedback" id="feedback"></div>
-  <div class="timer" id="timer"></div>
-  <div class="progress"><div class="bar" id="bar"></div></div>
-  <div class="comboFire" id="comboFire"></div>
-  <div class="leaderboard" id="leaderboard"></div>
-  <div class="achievements" id="achievements"></div>
-  <button id="nextBtn" style="display:none;margin-top:10px;"></button>
-</div>
-
-<div class="end" id="end" style="display:none">
-  <h2>Quiz Finished 🎉</h2>
-  <div class="leaderboard" id="finalLeaderboard"></div>
-  <button id="endMenuBtn">Back to Menu</button>
-</div>
-
-<div class="confetti" id="confetti"></div>
-
-<audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2023/03/03/audio_3425e1119e.mp3?filename=calm-cartoon-beat-131bpm-11911.mp3" type="audio/mpeg">
-</audio>
-
+<!-- BUBBLES -->
 <script>
-// Questions database (including Music Quiz)
+for(let i=0;i<20;i++){
+  let bubble=document.createElement('div');
+  bubble.className='bubble';
+  let size=Math.random()*20+10;
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
+  bubble.style.left=Math.random()*100+'vw';
+  bubble.style.animationDuration=(5+Math.random()*10)+'s';
+  bubble.style.backgroundColor=`hsla(${Math.random()*360},70%,60%,0.5)`;
+  document.body.appendChild(bubble);
+}
+</script>
+
+<!-- QUIZ SCRIPT -->
+<script>
+// Questions (you can add more)
 const allQuestions={
 akit:[{q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},{q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},{q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},{q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},{q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},{q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},{q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},{q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},{q:'2³ = ?',a:['6','8','9','12'],correct:1},{q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}],
 planet:[{q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},{q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},{q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},{q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},{q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},{q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},{q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},{q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},{q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},{q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}],
@@ -98,17 +142,15 @@ tech:[{q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power
 animals:[{q:'Fastest land animal?',a:['Cheetah','Leopard','Horse','Tiger'],correct:0},{q:'King of Jungle?',a:['Lion','Tiger','Elephant','Giraffe'],correct:0},{q:'Largest mammal?',a:['Elephant','Blue Whale','Giraffe','Hippo'],correct:1},{q:'Which animal is known for building dams?',a:['Beaver','Otter','Platypus','Moose'],correct:0},{q:'Animal with longest lifespan?',a:['Turtle','Elephant','Whale','Parrot'],correct:0},{q:'Which animal can fly backwards?',a:['Hummingbird','Bat','Butterfly','Bee'],correct:0},{q:'Which animal sleeps standing?',a:['Horse','Elephant','Cow','Giraffe'],correct:0},{q:'Fastest bird?',a:['Peregrine Falcon','Eagle','Sparrow','Hawk'],correct:0},{q:'Largest land predator?',a:['Polar Bear','Lion','Tiger','Grizzly'],correct:0},{q:'Smallest mammal?',a:['Bumblebee Bat','Mouse','Shrew','Hamster'],correct:0}],
 math:[{q:'5 × 6 = ?',a:['30','25','35','20'],correct:0},{q:'Square root of 144?',a:['10','11','12','14'],correct:2},{q:'Pi approx equals?',a:['3.14','3.15','3.41','3.44'],correct:0},{q:'2² + 3² = ?',a:['13','12','15','10'],correct:0},{q:'Factorial 4?',a:['24','12','16','8'],correct:0},{q:'10 ÷ 2 = ?',a:['5','2','10','12'],correct:0},{q:'7 × 8 = ?',a:['56','48','54','52'],correct:0},{q:'Square root of 81?',a:['9','8','7','10'],correct:0},{q:'5³ = ?',a:['125','15','25','75'],correct:0},{q:'0 + 0 = ?',a:['0','1','10','-1'],correct:0}],
 trivia:[{q:'Which ocean is largest?',a:['Atlantic','Pacific','Indian','Arctic'],correct:1},{q:'How many continents?',a:['5','6','7','8'],correct:2},{q:'First element on periodic table?',a:['Hydrogen','Helium','Lithium','Oxygen'],correct:0},{q:'Which year did the internet become public?',a:['1983','1990','1995','2000'],correct:2},{q:'Largest desert?',a:['Sahara','Gobi','Kalahari','Arabian'],correct:0},{q:'Tallest mountain?',a:['Everest','K2','Kilimanjaro','Mont Blanc'],correct:0},{q:'Longest river?',a:['Nile','Amazon','Yangtze','Mississippi'],correct:0},{q:'Largest country?',a:['Russia','Canada','China','USA'],correct:0},{q:'Smallest country?',a:['Vatican','Monaco','Malta','Liechtenstein'],correct:0},{q:'Fastest car brand?',a:['Bugatti','Ferrari','Tesla','Lamborghini'],correct:0}],
-music:[{q:'Which instrument has valves?',a:['Trumpet','Saxophone','Drums','Piano'],correct:0},{q:'Which is a woodwind?',a:['Trumpet','Saxophone','Trombone','Guitar'],correct:1},{q:'Trumpet is typically made of?',a:['Brass','Wood','Plastic','Steel'],correct:0},{q:'Saxophone invented by?',a:['Adolphe Sax','Louis Armstrong','John Coltrane','Miles Davis'],correct:0},{q:'Saxophone uses which reed?',a:['Single','Double','Triple','None'],correct:0}]
+music:[{q:'Which instrument has valves?',a:['Trumpet','Saxophone','Guitar','Piano'],correct:0},{q:'Which instrument is woodwind?',a:['Trumpet','Saxophone','Drums','Violin'],correct:1},{q:'Which instrument is brass?',a:['Trombone','Saxophone','Flute','Drum'],correct:0},{q:'Trumpet belongs to which family?',a:['Brass','String','Percussion','Woodwind'],correct:0},{q:'Saxophone belongs to which family?',a:['Brass','Woodwind','Percussion','String'],correct:1}]
 };
 
-// State
+// State variables
 let players=[],currentPlayerIndex=0,questions=[],index=0,interval,timer=10,mode='solo';
-
-// Elements
-const modeSelect=document.getElementById('modeSelect');
+const modeSelectEl=document.getElementById('modeSelect');
 const soloBtn=document.getElementById('soloBtn');
 const multiBtn=document.getElementById('multiBtn');
-const playerSetup=document.getElementById('playerSetup');
+const playerSetupEl=document.getElementById('playerSetup');
 const startBtn=document.getElementById('startBtn');
 const menuEl=document.getElementById('menu');
 const quizEl=document.getElementById('quiz');
@@ -126,19 +168,21 @@ const finalLeaderboardEl=document.getElementById('finalLeaderboard');
 const endMenuBtn=document.getElementById('endMenuBtn');
 const achievementsEl=document.getElementById('achievements');
 const confettiEl=document.getElementById('confetti');
-const playMusicBtn=document.getElementById('playMusicBtn');
-const bgMusic=document.getElementById('bgMusic');
-
-// Play music button
-let musicPlaying=false;
-playMusicBtn.onclick=()=>{
-  if(!musicPlaying){bgMusic.play();playMusicBtn.textContent='Pause Music';musicPlaying=true;}
-  else{bgMusic.pause();playMusicBtn.textContent='Play Music';musicPlaying=false;}
+const musicToggle=document.getElementById('musicToggle');
+const bgMusic=new Audio('https://cdn.pixabay.com/download/audio/2022/08/06/audio_7d6076e32b.mp3?filename=calm-lofi-beat-110-bpm-124618.mp3'); 
+bgMusic.loop=true;
+musicToggle.onclick=()=>{
+  if(bgMusic.paused){bgMusic.play(); musicToggle.textContent='Pause Music';}
+  else{bgMusic.pause(); musicToggle.textContent='Play Music';}
 };
 
-// Mode selection
-soloBtn.onclick=()=>{mode='solo';modeSelect.style.display='none';playerSetup.style.display='flex';document.getElementById('p2').style.display='none';document.getElementById('p3').style.display='none';document.getElementById('p4').style.display='none';};
-multiBtn.onclick=()=>{mode='multi';modeSelect.style.display='none';playerSetup.style.display='flex';document.getElementById('p2').style.display='block';document.getElementById('p3').style.display='block';document.getElementById('p4').style.display='block';};
+// Mode buttons
+soloBtn.onclick=()=>{
+  mode='solo';modeSelectEl.classList.add('hidden');playerSetupEl.classList.remove('hidden');document.getElementById('p2').style.display='none';document.getElementById('p3').style.display='none';document.getElementById('p4').style.display='none';
+};
+multiBtn.onclick=()=>{
+  mode='multi';modeSelectEl.classList.add('hidden');playerSetupEl.classList.remove('hidden');document.getElementById('p2').style.display='block';document.getElementById('p3').style.display='block';document.getElementById('p4').style.display='block';
+};
 
 // Player setup
 startBtn.onclick=()=>{
@@ -154,42 +198,38 @@ startBtn.onclick=()=>{
     }
     if(players.length<2){alert('Enter at least 2 names');return;}
   }
-  playerSetup.style.display='none';
-  menuEl.style.display='flex';
+  playerSetupEl.classList.add('hidden');
+  menuEl.classList.remove('hidden');
 };
 
-// Menu topic selection
-for(const btn of document.querySelectorAll('.menu-btn')){
+// Menu quiz selection
+document.querySelectorAll('.menu-btn').forEach(btn=>{
   btn.onclick=()=>{
     const topic=btn.id.replace('Btn','').toLowerCase();
     questions=[...allQuestions[topic]];
     index=0;
-    menuEl.style.display='none';
-    quizEl.style.display='block';
+    menuEl.classList.add('hidden');
+    quizEl.classList.remove('hidden');
     currentPlayerIndex=0;
     startQuestion();
   };
-}
+});
 
-// Start question
+// Quiz logic
 function startQuestion(){
   const currentPlayer=players[currentPlayerIndex];
-  questionEl.textContent=questions[index].q;
+  const q=questions[index];
+  questionEl.textContent=q.q;
   optionsEl.innerHTML='';
-  questions[index].a.forEach((opt,i)=>{
-    const b=document.createElement('button');
-    b.textContent=opt;
-    b.onclick=()=>selectAnswer(i);
-    optionsEl.appendChild(b);
+  q.a.forEach((opt,i)=>{
+    const b=document.createElement('button');b.textContent=opt;b.onclick=()=>selectAnswer(i);optionsEl.appendChild(b);
   });
   feedbackEl.classList.remove('show');
-  timer=10;
-  updateTimer();
+  timer=10;updateTimer();
   clearInterval(interval);
   interval=setInterval(()=>{
-    timer--;
-    updateTimer();
-    if(timer<=0) selectAnswer(-1);
+    timer--;updateTimer();
+    if(timer<=0){selectAnswer(-1);}
   },1000);
   comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
   turnIndicator.textContent=mode==='solo'?'':'Turn: '+currentPlayer.name;
@@ -197,97 +237,47 @@ function startQuestion(){
   updateLeaderboard();
 }
 
-// Timer update
-function updateTimer(){
-  timerEl.textContent='⏰ '+timer+'s';
-  timerEl.style.color=timer<=3?'red':'white';
-  bar.style.width=((10-timer)/10*100)+'%';
-}
+function updateTimer(){timerEl.textContent='⏰ '+timer+'s';timerEl.style.color=timer<=3?'red':'white';}
 
-// Select answer
 function selectAnswer(choice){
   clearInterval(interval);
   const q=questions[index];
   const currentPlayer=players[currentPlayerIndex];
-  let correct=q.correct===choice;
-  if(correct){
-    feedbackEl.textContent='✅ Correct!';
-    feedbackEl.classList.add('show');
-    document.body.style.background='linear-gradient(135deg,#00c853,#00695c)';
-    currentPlayer.combo++;
-    currentPlayer.score+=10*currentPlayer.combo;
-    fireConfetti();
-  }else{
-    feedbackEl.textContent='❌ Wrong! Correct: '+q.a[q.correct];
-    feedbackEl.classList.add('show');
-    document.body.style.background='linear-gradient(135deg,#b71c1c,#880e4f)';
-    currentPlayer.combo=0;
-  }
+  const correct=q.correct===choice;
+  if(correct){feedbackEl.textContent='✅ Correct!';feedbackEl.classList.add('show');document.body.style.background='linear-gradient(135deg,#00c853,#00695c)';currentPlayer.combo++;currentPlayer.score+=10*currentPlayer.combo;fireConfetti();}
+  else{feedbackEl.textContent='❌ Wrong! Correct: '+q.a[q.correct];feedbackEl.classList.add('show');document.body.style.background='linear-gradient(135deg,#b71c1c,#880e4f)';currentPlayer.combo=0;}
   comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
   nextBtn.textContent=mode==='solo'?'Next Question':'Next Player';
   nextBtn.style.display='block';
   updateLeaderboard();
-  updateAchievements(currentPlayer);
 }
 
-// Next question/player
 nextBtn.onclick=()=>{
-  document.body.style.background='linear-gradient(135deg,#0f0c29,#302b63,#24243e)';
+  document.body.style.background='linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb)';
   index++;
   if(index>=questions.length){endQuiz();return;}
   if(mode==='multi') currentPlayerIndex=(currentPlayerIndex+1)%players.length;
   startQuestion();
-}
+};
 
-// Leaderboard
-function updateLeaderboard(){
-  leaderboardEl.innerHTML='';
-  players.forEach(p=>{
-    const div=document.createElement('div');
-    div.className='lb-row';
-    div.textContent=p.name+' • '+p.score+' pts';
-    leaderboardEl.appendChild(div);
-  });
-}
+function updateLeaderboard(){leaderboardEl.innerHTML='';players.forEach(p=>{const div=document.createElement('div');div.className='lb-row';div.textContent=p.name+' • '+p.score+' pts';leaderboardEl.appendChild(div);});}
 
-// End quiz
 function endQuiz(){
-  quizEl.style.display='none';
-  endEl.style.display='block';
+  quizEl.classList.add('hidden');
+  endEl.classList.remove('hidden');
   finalLeaderboardEl.innerHTML='';
-  players.sort((a,b)=>b.score-b.score).forEach(p=>{
-    const row=document.createElement('div');
-    row.className='lb-row';
-    row.textContent=p.name+' • '+p.score+' pts';
-    finalLeaderboardEl.appendChild(row);
+  players.sort((a,b)=>b.score-a.score).forEach(p=>{
+    const row=document.createElement('div');row.className='lb-row';row.textContent=p.name+' • '+p.score+' pts';finalLeaderboardEl.appendChild(row);
   });
   confettiEl.innerHTML='🎉🎉🎉';
 }
 
-// Back to menu
 endMenuBtn.onclick=()=>{
-  endEl.style.display='none';
-  modeSelect.style.display='flex';
-  document.body.style.background='linear-gradient(135deg,#0f0c29,#302b63,#24243e)';
-  confettiEl.innerHTML='';
-  players=[];
-  currentPlayerIndex=0;
-  index=0;
-}
+  endEl.classList.add('hidden');modeSelectEl.classList.remove('hidden');document.body.style.background='linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb)';confettiEl.innerHTML='';players=[];currentPlayerIndex=0;index=0;
+};
 
-// Achievements
-function updateAchievements(player){
-  let ach='';
-  if(player.combo>=3) ach+='🔥 3 Combo! ';
-  if(player.score>=50) ach+='🏆 50+ pts! ';
-  achievementsEl.textContent=ach;
-}
-
-// Confetti
-function fireConfetti(){
-  confettiEl.innerHTML='🎊🎊🎊';
-  setTimeout(()=>{confettiEl.innerHTML='';},1000);
-}
+function fireConfetti(){confettiEl.innerHTML='🎊🎊🎊';setTimeout(()=>{confettiEl.innerHTML='';},1000);}
 </script>
 </body>
 </html>
+
