@@ -1,283 +1,728 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKit Quiz</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AKit — Ultra Fun Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  :root{
+    --bg-a:#2b1055;
+    --bg-b:#7f5af0;
+    --card:#ffffff10;
+    --accent:#ffd66b;
+    --muted:rgba(255,255,255,0.8);
+    --glass: rgba(255,255,255,0.06);
+    --neon: #7ef9ff;
+    --round:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(160deg,var(--bg-a),#2a2a72 40%,var(--bg-b));font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:white;overflow:hidden}
+  /* full screen app shell */
+  .app{
+    position:relative;
+    width:100vw;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:clamp(12px,2vw,28px);
+  }
 
-/* BASE STYLES */
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
-body{height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;
-  background: linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb);
-  background-size: 600% 600%; animation: gradientBG 20s ease infinite;
-  color:white; transition: background 0.5s;
-}
-@keyframes gradientBG{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
+  /* main card that contains UI (keeps everything centered & responsive) */
+  .card{
+    width:100%;
+    height:100%;
+    max-width:1200px;
+    max-height:940px;
+    border-radius:24px;
+    padding:20px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    box-shadow: 0 20px 60px rgba(7,8,25,0.6);
+    position:relative;overflow:hidden;display:grid;
+    grid-template-columns: 420px 1fr;
+    gap:18px;
+  }
 
-.container{width:90%;max-width:900px;text-align:center;position:relative;padding:30px;border-radius:20px;background:rgba(0,0,0,0.25);box-shadow:0 0 20px rgba(0,0,0,0.5);overflow:hidden;}
-h1{font-size:3rem;margin-bottom:20px;letter-spacing:1px;text-shadow:0 0 8px #fff;}
+  /* left column: home / menu stuff */
+  .left{
+    padding:20px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:flex-start;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .logo{
+    width:120px;height:120px;border-radius:16px;background:linear-gradient(135deg,#ffe27a,#ff9a9e);
+    display:flex;align-items:center;justify-content:center;color:#222;font-weight:800;font-family:"Baloo 2",cursive;font-size:28px;box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  }
+  h1{font-family:"Baloo 2",cursive;margin:0;font-size:28px}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:4px;text-align:center}
 
-button{padding:12px 25px;font-size:1.2rem;border:none;border-radius:12px;background:#00aaff;color:white;cursor:pointer;margin:8px;transition:0.3s;}
-button:hover{transform:scale(1.1);background:#00ccff;box-shadow:0 0 12px #00ccff;}
+  /* fancy title animation */
+  .title-row{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px}
+  .title-wave{display:flex;gap:8px;align-items:center}
+  .title-wave .letter{font-weight:800; font-size:36px; color: #fff; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45)); transform-origin:center; animation: float 3s ease-in-out infinite}
+  .title-wave .letter:nth-child(1){animation-delay:0s}
+  .title-wave .letter:nth-child(2){animation-delay:.06s}
+  .title-wave .letter:nth-child(3){animation-delay:.12s}
+  .title-wave .letter:nth-child(4){animation-delay:.18s}
+  .title-wave .letter:nth-child(5){animation-delay:.24s}
+  .title-wave .letter:nth-child(6){animation-delay:.30s}
+  @keyframes float {
+    0%{transform:translateY(0) rotateZ(-2deg)}
+    50%{transform:translateY(-6px) rotateZ(2deg)}
+    100%{transform:translateY(0) rotateZ(-2deg)}
+  }
 
-input{padding:12px;margin:6px;border-radius:10px;border:none;outline:none;font-size:1rem;}
+  /* big mode buttons */
+  .modes{display:flex;flex-direction:column;gap:10px;width:100%}
+  .big-btn{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:none;background:linear-gradient(90deg,#ffffff12,#ffffff05);cursor:pointer;color:white;font-weight:700;font-size:16px;transition:transform .18s, box-shadow .18s, background .18s}
+  .big-btn:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.5);background:linear-gradient(90deg,#ffffff18,#ffffff06)}
+  .big-btn .k{width:52px;height:52px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-family:"Baloo 2",cursive}
+  .small-row{display:flex;gap:8px;align-items:center;width:100%;justify-content:center;margin-top:6px}
 
-.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
+  /* gamemode / icon cloud under modes */
+  .icon-cloud{width:100%;display:flex;flex-wrap:wrap;gap:10px;padding:8px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.06), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03)}
+  .icon-card{width:84px;height:84px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .18s, box-shadow .18s}
+  .icon-card:hover{transform:translateY(-8px);box-shadow:0 16px 30px rgba(0,0,0,0.35)}
+  .icon-emoji{font-size:28px;margin-bottom:6px}
+  .icon-label{font-size:12px;color:var(--muted)}
 
-.feedback{font-size:1.3rem;margin:10px 0;opacity:0;transform:scale(0.9);transition:0.3s;}
-.feedback.show{opacity:1;transform:scale(1);}
+  /* right column: quiz area */
+  .right{padding:20px;border-radius:16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:auto}
+  .topbar{display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .players{display:flex;gap:8px;align-items:center}
+  .player-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));font-weight:700}
+  .turnIndicator{color:var(--accent);font-weight:800}
 
-.timer{margin-top:5px;font-size:1rem;}
-.progress{height:12px;background:rgba(255,255,255,0.2);border-radius:6px;overflow:hidden;margin:15px 0;}
-.bar{height:100%;width:0%;background:#00ffea;transition:width 0.3s;}
+  .quiz-card{padding:12px;border-radius:14px;background:linear-gradient(180deg, rgba(0,0,0,0.04), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:10px}
+  .question{font-size:20px;font-weight:700}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .option-btn{padding:12px;border-radius:12px;border:none;background:linear-gradient(180deg,#ffffff06,#ffffff03);cursor:pointer;font-weight:700;transition:transform .12s}
+  .option-btn:hover{transform:translateY(-6px);box-shadow:0 12px 26px rgba(0,0,0,0.35)}
+  .feedback{height:28px;font-weight:800}
 
-.menu,.playerSetup,.modeSelect{display:flex;flex-direction:column;align-items:center;gap:12px;transition:0.5s;opacity:1;}
-.hidden{opacity:0;pointer-events:none;transition:0.5s;}
+  .timer{font-weight:700}
+  .progress{height:12px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+  .bar{height:100%;width:0%;background:linear-gradient(90deg,#7ef9ff,#7ef9b5);transition:width .3s}
 
-.turnIndicator{margin-top:10px;font-size:1.2rem;color:#ffd700;}
-.comboFire{color:#ffdd00;font-weight:bold;margin-top:5px;}
-.achievements{margin-top:10px;font-size:1rem;color:#00ffea;}
+  .leaderboard{margin-top:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,0.02)}
+  .lb-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  .lb-row:last-child{border-bottom:0}
 
-.confetti{position:fixed;width:100%;height:100%;pointer-events:none;top:0;left:0;z-index:999;font-size:2rem;}
+  .footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+  .small-btn{padding:8px 12px;border-radius:10px;border:none;background:#00aaff;color:#fff;cursor:pointer;font-weight:700}
 
-.musicControl{position:absolute;top:15px;right:20px;background:#00aaff;padding:8px 15px;border-radius:12px;font-size:1rem;cursor:pointer;z-index:10;}
+  /* mascot + floating assets layer */
+  .maskot-layer{position:absolute;inset:0;pointer-events:none;z-index:6}
+  .mascot{
+    position:absolute;left:22px;bottom:22px;width:120px;height:120px;border-radius:18px;background:linear-gradient(135deg,#fff,#ffddaa);
+    display:flex;align-items:center;justify-content:center;color:#222;font-weight:900;font-family:"Baloo 2",cursive;font-size:28px;box-shadow:0 12px 40px rgba(0,0,0,0.5);
+    transform-origin:center;animation:mascotBob 3s ease-in-out infinite;
+  }
+  @keyframes mascotBob{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
 
-.bubble{position:absolute;border-radius:50%;opacity:0.5;animation:bubbleMove linear infinite;pointer-events:none;}
-@keyframes bubbleMove{0%{transform:translateY(0);}100%{transform:translateY(-120vh);}}
+  .floating-icon{position:absolute;width:80px;height:80px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(0,0,0,0.03));display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;transition:transform .18s}
+  .floating-icon:hover{transform:translateY(-8px) scale(1.05);box-shadow:0 20px 40px rgba(0,0,0,0.35)}
+  /* positions (desktop) */
+  .f1{right:28px;top:28px}
+  .f2{right:110px;top:140px}
+  .f3{left:160px;top:60px}
+  .f4{right:40px;bottom:160px}
+  .f5{left:200px;bottom:80px}
 
-@media(max-width:600px){
-  h1{font-size:2rem;}
-  button{font-size:1rem;padding:10px 20px;}
-  input{font-size:0.9rem;padding:10px;}
-}
+  /* particles canvas overlay */
+  #particleCanvas{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.9}
+
+  /* responsive */
+  @media(max-width:1000px){
+    .card{grid-template-columns:1fr;max-height:none;height:100%}
+    .left{order:2;flex-direction:row;gap:8px;align-items:center;justify-content:space-between;padding:12px}
+    .logo{width:78px;height:78px;font-size:18px}
+    .title-wave .letter{font-size:22px}
+    .mascot{left:12px;bottom:8px;width:88px;height:88px}
+    .floating-icon{display:none}
+  }
+
+  @media(max-width:560px){
+    .title-wave .letter{font-size:18px}
+    .logo{width:64px;height:64px}
+    h1{font-size:18px}
+    .players{display:none}
+  }
 </style>
 </head>
 <body>
+<div class="app">
+  <div class="card" id="card">
+    <!-- Left column (home / menu area) -->
+    <div class="left" aria-hidden="false">
+      <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+        <div class="logo" id="logo">AKit</div>
+        <div class="title-row" style="margin-top:8px">
+          <div class="title-wave" aria-hidden="true">
+            <div class="letter">A</div><div class="letter">K</div><div class="letter">i</div><div class="letter">t</div><div class="letter">!</div>
+          </div>
+          <div class="subtitle">Quizzes, music, and chaos — pick a mode and play</div>
+        </div>
+      </div>
 
-<div class="container">
-  <div class="musicControl" id="musicToggle">Play Music</div>
-  <h1>AKit Quiz</h1>
+      <div style="width:100%;margin-top:14px">
+        <div class="modes">
+          <button class="big-btn" id="soloBtn"><div class="k">S</div> Solo Mode <div style="margin-left:auto;font-size:12px;color:var(--muted)">Single player</div></button>
+          <button class="big-btn" id="multiBtn"><div class="k">M</div> Multiplayer <div style="margin-left:auto;font-size:12px;color:var(--muted)">Up to 4 players</div></button>
+        </div>
 
-  <!-- MODE SELECTION -->
-  <div class="modeSelect" id="modeSelect">
-    <p>Select Mode</p>
-    <button id="soloBtn">Solo Mode</button>
-    <button id="multiBtn">Multiplayer Mode</button>
+        <div style="margin-top:12px" class="small-row">
+          <button id="openPlayers" class="small-btn">Player Setup</button>
+          <button id="how" class="small-btn">How to Play</button>
+          <button id="toggleMusic" class="small-btn">Play Music</button>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="icon-cloud" id="iconCloud">
+            <!-- icons generated via JS for fun -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column (quiz area) -->
+    <div class="right" role="main">
+      <div class="topbar">
+        <div class="players" id="playerStrip"></div>
+        <div class="turnIndicator" id="turnIndicator">Welcome — press a mode to start</div>
+      </div>
+
+      <div class="quiz-card" id="menuCard">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800;font-size:18px">Ready to Play?</div>
+          <div style="font-size:13px;color:var(--muted)">Select quiz on the left or use icons</div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="small-btn" id="startGameBtn">Start Last Selected</button>
+          <button class="small-btn" id="viewScores">View Scores</button>
+          <button class="small-btn" id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <!-- Main quiz area -->
+      <div class="quiz-card hidden" id="quizCard" aria-live="polite" aria-atomic="true">
+        <div class="question" id="question">Question will appear here</div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="timer" id="timer">⏰ 10s</div>
+          <div style="width:60%;"><div class="progress"><div class="bar" id="bar"></div></div></div>
+        </div>
+        <div class="leaderboard" id="leaderboard"></div>
+        <div class="footer">
+          <div class="achievements" id="achievements"></div>
+          <div style="display:flex;gap:8px">
+            <button id="nextBtn" class="small-btn" style="display:none">Next</button>
+            <button id="endBtn" class="small-btn">End</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- End card -->
+      <div class="quiz-card hidden" id="endCard">
+        <h3>Quiz Finished 🎉</h3>
+        <div class="leaderboard" id="finalLeaderboard"></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button id="backMenuBtn" class="small-btn">Back to Menu</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- mascot and floating icons + canvas -->
+    <div class="maskot-layer" aria-hidden="true">
+      <div class="mascot" id="mascot">AK</div>
+      <div class="floating-icon f1" data-mode="planet" title="Planet Quiz"><div style="text-align:center"><div class="icon-emoji">🪐</div><div style="font-size:12px;margin-top:6px">Planet</div></div></div>
+      <div class="floating-icon f2" data-mode="tech" title="Technology Quiz"><div style="text-align:center"><div class="icon-emoji">💾</div><div style="font-size:12px;margin-top:6px">Tech</div></div></div>
+      <div class="floating-icon f3" data-mode="math" title="Math Quiz"><div style="text-align:center"><div class="icon-emoji">∑</div><div style="font-size:12px;margin-top:6px">Math</div></div></div>
+      <div class="floating-icon f4" data-mode="music" title="Music Quiz"><div style="text-align:center"><div class="icon-emoji">🎷</div><div style="font-size:12px;margin-top:6px">Music</div></div></div>
+      <div class="floating-icon f5" data-mode="animals" title="Animals Quiz"><div style="text-align:center"><div class="icon-emoji">🐾</div><div style="font-size:12px;margin-top:6px">Animals</div></div></div>
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
   </div>
-
-  <!-- PLAYER SETUP -->
-  <div class="playerSetup hidden" id="playerSetup">
-    <p>Enter Player Names</p>
-    <input id="p1" placeholder="Player 1">
-    <input id="p2" placeholder="Player 2">
-    <input id="p3" placeholder="Player 3">
-    <input id="p4" placeholder="Player 4">
-    <button id="startBtn">Next</button>
-  </div>
-
-  <!-- MENU -->
-  <div class="menu hidden" id="menu">
-    <p>Select Quiz Topic</p>
-    <button class="menu-btn" id="akitBtn">AKit Quiz</button>
-    <button class="menu-btn" id="planetBtn">Planet Quiz</button>
-    <button class="menu-btn" id="techBtn">Technology Quiz</button>
-    <button class="menu-btn" id="animalsBtn">Animals Quiz</button>
-    <button class="menu-btn" id="mathBtn">Math Quiz</button>
-    <button class="menu-btn" id="triviaBtn">Random Trivia</button>
-    <button class="menu-btn" id="musicBtn">Music Quiz</button>
-  </div>
-
-  <!-- QUIZ -->
-  <div id="quiz" class="hidden">
-    <div class="turnIndicator" id="turnIndicator"></div>
-    <div class="question" id="question"></div>
-    <div class="options" id="options"></div>
-    <div class="feedback" id="feedback"></div>
-    <div class="timer" id="timer"></div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-    <div class="comboFire" id="comboFire"></div>
-    <div class="leaderboard" id="leaderboard"></div>
-    <div class="achievements" id="achievements"></div>
-    <button id="nextBtn" style="display:none;margin-top:10px;"></button>
-  </div>
-
-  <!-- END -->
-  <div class="end hidden" id="end">
-    <h2>Quiz Finished!</h2>
-    <div class="leaderboard" id="finalLeaderboard"></div>
-    <button id="endMenuBtn">Back to Menu</button>
-  </div>
-
-  <div class="confetti" id="confetti"></div>
 </div>
 
-<!-- BUBBLES -->
+<!-- SOUND (small sfx) -->
 <script>
-for(let i=0;i<20;i++){
-  let bubble=document.createElement('div');
-  bubble.className='bubble';
-  let size=Math.random()*20+10;
-  bubble.style.width=size+'px';
-  bubble.style.height=size+'px';
-  bubble.style.left=Math.random()*100+'vw';
-  bubble.style.animationDuration=(5+Math.random()*10)+'s';
-  bubble.style.backgroundColor=`hsla(${Math.random()*360},70%,60%,0.5)`;
-  document.body.appendChild(bubble);
-}
+  // Preload small SFX as oscillator substitutes (WebAudio) and a calm beat sample for music
+  let audioCtx=null, sfxGain=null, musicGain=null, musicBuffer=null, musicSource=null;
+  const MUSIC_URL = 'https://cdn.pixabay.com/download/audio/2022/08/06/audio_7d6076e32b.mp3?filename=calm-lofi-beat-110-bpm-124618.mp3';
+
+  function initAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    sfxGain = audioCtx.createGain(); sfxGain.gain.value=0.9;
+    musicGain = audioCtx.createGain(); musicGain.gain.value=0.9;
+    sfxGain.connect(audioCtx.destination);
+    musicGain.connect(audioCtx.destination);
+    // fetch music
+    fetch(MUSIC_URL).then(r=>r.arrayBuffer()).then(d=>audioCtx.decodeAudioData(d)).then(b=>{musicBuffer=b}).catch(()=>{console.log('music load failed');});
+  }
+
+  function playSfx(type){
+    if(!audioCtx) return;
+    const now=audioCtx.currentTime;
+    if(type==='click'){
+      const o = audioCtx.createOscillator(); const g=audioCtx.createGain();
+      o.type='triangle'; o.frequency.value=660; g.gain.value=0.0001;
+      o.connect(g); g.connect(sfxGain);
+      g.gain.linearRampToValueAtTime(0.08, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.22);
+      o.start(now); o.stop(now+0.22);
+    } else if(type==='correct'){
+      const o = audioCtx.createOscillator(); const g=audioCtx.createGain();
+      o.type='sine'; o.frequency.value=880; g.gain.value=0.0001;
+      o.connect(g); g.connect(sfxGain);
+      g.gain.linearRampToValueAtTime(0.12, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.5);
+      o.start(now); o.stop(now+0.5);
+    } else if(type==='wrong'){
+      const o=audioCtx.createOscillator(); const g=audioCtx.createGain();
+      o.type='sawtooth'; o.frequency.value=160; o.connect(g); g.connect(sfxGain);
+      g.gain.linearRampToValueAtTime(0.08, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.4);
+      o.start(now); o.stop(now+0.4);
+    } else if(type==='win'){
+      [660,880,990].forEach((n,i)=>{
+        const o=audioCtx.createOscillator(); const g=audioCtx.createGain();
+        o.type='sine'; o.frequency.value=n; o.connect(g); g.connect(sfxGain);
+        const t = now + i*0.08;
+        g.gain.linearRampToValueAtTime(0.12, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+0.42);
+        o.start(t); o.stop(t+0.6);
+      });
+    }
+  }
+
+  function startMusic(){
+    if(!audioCtx) initAudio();
+    if(!musicBuffer) { // try to fetch if not ready
+      fetch(MUSIC_URL).then(r=>r.arrayBuffer()).then(d=>audioCtx.decodeAudioData(d)).then(b=>{musicBuffer=b; playMusicBuffer();}).catch(()=>{console.log('music error')});
+      return;
+    }
+    playMusicBuffer();
+  }
+  function playMusicBuffer(){
+    stopMusic();
+    musicSource = audioCtx.createBufferSource();
+    musicSource.buffer = musicBuffer;
+    musicSource.loop=true;
+    musicSource.connect(musicGain);
+    musicSource.start();
+  }
+  function stopMusic(){ if(musicSource) { try{musicSource.stop(); }catch(e){} musicSource=null;} }
 </script>
 
-<!-- QUIZ SCRIPT -->
+<!-- PARTICLES & UI logic & Quiz logic -->
 <script>
-// Questions (you can add more)
-const allQuestions={
-akit:[{q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},{q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},{q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},{q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},{q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},{q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},{q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},{q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},{q:'2³ = ?',a:['6','8','9','12'],correct:1},{q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}],
-planet:[{q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},{q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},{q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},{q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},{q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},{q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},{q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},{q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},{q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},{q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}],
-tech:[{q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power Unit','Central Print Unit','Control Program Unit'],correct:0},{q:'HTML is used for?',a:['Styling','Content structure','Programming logic','Database'],correct:1},{q:'Which company makes Windows?',a:['Apple','Microsoft','Google','Linux'],correct:1},{q:'Most popular programming language in 2025?',a:['Python','JavaScript','C++','Rust'],correct:1},{q:'What is AI?',a:['Artificial Intelligence','Automatic Input','Auto Image','Application Interface'],correct:0},{q:'JS stands for?',a:['JavaScript','JavaServer','JustScript','JoinScript'],correct:0},{q:'CSS is for?',a:['Design','Logic','Database','Network'],correct:0},{q:'Tech company Apple founded?',a:['1976','1980','1990','2000'],correct:0},{q:'First search engine?',a:['Google','Archie','Bing','Yahoo'],correct:1},{q:'Device to input text?',a:['Keyboard','Mouse','Monitor','Printer'],correct:0}],
-animals:[{q:'Fastest land animal?',a:['Cheetah','Leopard','Horse','Tiger'],correct:0},{q:'King of Jungle?',a:['Lion','Tiger','Elephant','Giraffe'],correct:0},{q:'Largest mammal?',a:['Elephant','Blue Whale','Giraffe','Hippo'],correct:1},{q:'Which animal is known for building dams?',a:['Beaver','Otter','Platypus','Moose'],correct:0},{q:'Animal with longest lifespan?',a:['Turtle','Elephant','Whale','Parrot'],correct:0},{q:'Which animal can fly backwards?',a:['Hummingbird','Bat','Butterfly','Bee'],correct:0},{q:'Which animal sleeps standing?',a:['Horse','Elephant','Cow','Giraffe'],correct:0},{q:'Fastest bird?',a:['Peregrine Falcon','Eagle','Sparrow','Hawk'],correct:0},{q:'Largest land predator?',a:['Polar Bear','Lion','Tiger','Grizzly'],correct:0},{q:'Smallest mammal?',a:['Bumblebee Bat','Mouse','Shrew','Hamster'],correct:0}],
-math:[{q:'5 × 6 = ?',a:['30','25','35','20'],correct:0},{q:'Square root of 144?',a:['10','11','12','14'],correct:2},{q:'Pi approx equals?',a:['3.14','3.15','3.41','3.44'],correct:0},{q:'2² + 3² = ?',a:['13','12','15','10'],correct:0},{q:'Factorial 4?',a:['24','12','16','8'],correct:0},{q:'10 ÷ 2 = ?',a:['5','2','10','12'],correct:0},{q:'7 × 8 = ?',a:['56','48','54','52'],correct:0},{q:'Square root of 81?',a:['9','8','7','10'],correct:0},{q:'5³ = ?',a:['125','15','25','75'],correct:0},{q:'0 + 0 = ?',a:['0','1','10','-1'],correct:0}],
-trivia:[{q:'Which ocean is largest?',a:['Atlantic','Pacific','Indian','Arctic'],correct:1},{q:'How many continents?',a:['5','6','7','8'],correct:2},{q:'First element on periodic table?',a:['Hydrogen','Helium','Lithium','Oxygen'],correct:0},{q:'Which year did the internet become public?',a:['1983','1990','1995','2000'],correct:2},{q:'Largest desert?',a:['Sahara','Gobi','Kalahari','Arabian'],correct:0},{q:'Tallest mountain?',a:['Everest','K2','Kilimanjaro','Mont Blanc'],correct:0},{q:'Longest river?',a:['Nile','Amazon','Yangtze','Mississippi'],correct:0},{q:'Largest country?',a:['Russia','Canada','China','USA'],correct:0},{q:'Smallest country?',a:['Vatican','Monaco','Malta','Liechtenstein'],correct:0},{q:'Fastest car brand?',a:['Bugatti','Ferrari','Tesla','Lamborghini'],correct:0}],
-music:[{q:'Which instrument has valves?',a:['Trumpet','Saxophone','Guitar','Piano'],correct:0},{q:'Which instrument is woodwind?',a:['Trumpet','Saxophone','Drums','Violin'],correct:1},{q:'Which instrument is brass?',a:['Trombone','Saxophone','Flute','Drum'],correct:0},{q:'Trumpet belongs to which family?',a:['Brass','String','Percussion','Woodwind'],correct:0},{q:'Saxophone belongs to which family?',a:['Brass','Woodwind','Percussion','String'],correct:1}]
-};
+/* ---------------------------
+   Particle canvas (fun sparkles)
+   --------------------------- */
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let w=0,h=0,particles=[];
+function resizeCanvas(){ w = canvas.width = card.clientWidth; h = canvas.height = card.clientHeight; }
+const card = document.getElementById('card');
+window.addEventListener('resize', ()=>{ resizeCanvas(); });
+resizeCanvas();
 
-// State variables
-let players=[],currentPlayerIndex=0,questions=[],index=0,interval,timer=10,mode='solo';
-const modeSelectEl=document.getElementById('modeSelect');
-const soloBtn=document.getElementById('soloBtn');
-const multiBtn=document.getElementById('multiBtn');
-const playerSetupEl=document.getElementById('playerSetup');
-const startBtn=document.getElementById('startBtn');
-const menuEl=document.getElementById('menu');
-const quizEl=document.getElementById('quiz');
-const questionEl=document.getElementById('question');
-const optionsEl=document.getElementById('options');
-const feedbackEl=document.getElementById('feedback');
-const timerEl=document.getElementById('timer');
-const bar=document.getElementById('bar');
-const leaderboardEl=document.getElementById('leaderboard');
-const comboFireEl=document.getElementById('comboFire');
-const turnIndicator=document.getElementById('turnIndicator');
-const nextBtn=document.getElementById('nextBtn');
-const endEl=document.getElementById('end');
-const finalLeaderboardEl=document.getElementById('finalLeaderboard');
-const endMenuBtn=document.getElementById('endMenuBtn');
-const achievementsEl=document.getElementById('achievements');
-const confettiEl=document.getElementById('confetti');
-const musicToggle=document.getElementById('musicToggle');
-const bgMusic=new Audio('https://cdn.pixabay.com/download/audio/2022/08/06/audio_7d6076e32b.mp3?filename=calm-lofi-beat-110-bpm-124618.mp3'); 
-bgMusic.loop=true;
-musicToggle.onclick=()=>{
-  if(bgMusic.paused){bgMusic.play(); musicToggle.textContent='Pause Music';}
-  else{bgMusic.pause(); musicToggle.textContent='Play Music';}
-};
+function rand(min,max){return Math.random()*(max-min)+min}
+for(let i=0;i<60;i++){
+  particles.push({
+    x: rand(0,w), y: rand(0,h), r: rand(1,6), vx: rand(-0.2,0.8), vy: rand(-0.6, -0.2),
+    hue: rand(160,320), alpha: rand(0.2,0.9)
+  });
+}
+function drawParticles(){
+  ctx.clearRect(0,0,w,h);
+  particles.forEach(p=>{
+    p.x += p.vx; p.y += p.vy;
+    if(p.y < -10 || p.x < -20 || p.x > w+20){ p.x = rand(0,w); p.y = h + rand(0,40); p.vy = rand(-0.8,-0.2); p.vx = rand(-0.2,0.6); }
+    ctx.beginPath();
+    ctx.fillStyle = `hsla(${p.hue},70%,65%,${p.alpha})`;
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
 
-// Mode buttons
-soloBtn.onclick=()=>{
-  mode='solo';modeSelectEl.classList.add('hidden');playerSetupEl.classList.remove('hidden');document.getElementById('p2').style.display='none';document.getElementById('p3').style.display='none';document.getElementById('p4').style.display='none';
-};
-multiBtn.onclick=()=>{
-  mode='multi';modeSelectEl.classList.add('hidden');playerSetupEl.classList.remove('hidden');document.getElementById('p2').style.display='block';document.getElementById('p3').style.display='block';document.getElementById('p4').style.display='block';
-};
-
-// Player setup
-startBtn.onclick=()=>{
-  players=[];
-  if(mode==='solo'){
-    const name=document.getElementById('p1').value.trim();
-    if(!name){alert('Enter your name');return;}
-    players.push({name,score:0,combo:0});
-  }else{
-    for(let i=1;i<=4;i++){
-      const val=document.getElementById('p'+i).value.trim();
-      if(val)players.push({name:val,score:0,combo:0});
-    }
-    if(players.length<2){alert('Enter at least 2 names');return;}
-  }
-  playerSetupEl.classList.add('hidden');
-  menuEl.classList.remove('hidden');
-};
-
-// Menu quiz selection
-document.querySelectorAll('.menu-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    const topic=btn.id.replace('Btn','').toLowerCase();
-    questions=[...allQuestions[topic]];
-    index=0;
-    menuEl.classList.add('hidden');
-    quizEl.classList.remove('hidden');
-    currentPlayerIndex=0;
-    startQuestion();
-  };
+/* ---------------------------
+   Floating icon clicks -> quick select gamemode
+   --------------------------- */
+document.querySelectorAll('.floating-icon').forEach(el=>{
+  el.addEventListener('click', ()=> {
+    const mode = el.dataset.mode;
+    selectGamemode(mode);
+    // open menu & hint
+    document.getElementById('menuCard').scrollIntoView({behavior:'smooth',block:'center'});
+    playSfx('click');
+  });
 });
 
-// Quiz logic
-function startQuestion(){
-  const currentPlayer=players[currentPlayerIndex];
-  const q=questions[index];
-  questionEl.textContent=q.q;
-  optionsEl.innerHTML='';
-  q.a.forEach((opt,i)=>{
-    const b=document.createElement('button');b.textContent=opt;b.onclick=()=>selectAnswer(i);optionsEl.appendChild(b);
+/* ---------------------------
+   icon cloud (left) populate
+   --------------------------- */
+const icons = [
+  {id:'akit', emoji:'🧠', label:'AKit'},
+  {id:'planet', emoji:'🪐', label:'Planet'},
+  {id:'tech', emoji:'💾', label:'Tech'},
+  {id:'math', emoji:'∑', label:'Math'},
+  {id:'music', emoji:'🎵', label:'Music'},
+  {id:'animals', emoji:'🐾', label:'Animals'},
+  {id:'trivia', emoji:'❓', label:'Trivia'}
+];
+const iconCloud = document.getElementById('iconCloud');
+icons.forEach(ic=>{
+  const node = document.createElement('div');
+  node.className = 'icon-card';
+  node.innerHTML = `<div style="font-size:26px">${ic.emoji}</div><div class="icon-label">${ic.label}</div>`;
+  node.onclick = ()=>{ selectGamemode(ic.id); openMenu(); playSfx('click') };
+  iconCloud.appendChild(node);
+});
+
+/* ---------------------------
+   Small helpers & UI wiring
+   --------------------------- */
+const soloBtn = document.getElementById('soloBtn');
+const multiBtn = document.getElementById('multiBtn');
+const openPlayers = document.getElementById('openPlayers');
+const toggleMusic = document.getElementById('toggleMusic');
+const startGameBtn = document.getElementById('startGameBtn');
+const resetBtn = document.getElementById('resetBtn');
+const howBtn = document.getElementById('how');
+const playerStrip = document.getElementById('playerStrip');
+const playerP2 = document.getElementById('p2');
+const playerP3 = document.getElementById('p3');
+const playerP4 = document.getElementById('p4');
+const playerSetupEl = document.getElementById('playerSetup');
+const menuEl = document.getElementById('menuCard');
+const quizCard = document.getElementById('quizCard');
+const endCard = document.getElementById('endCard');
+const menuLeft = document.querySelector('.left');
+const modeSelectEl = document.getElementById('modeSelect');
+const toggleMusicBtn = document.getElementById('toggleMusic');
+
+let selectedGamemode = 'akit';
+let players = [];
+let mode='solo';
+
+/* mode selection */
+soloBtn.addEventListener('click', ()=>{ mode='solo'; openPlayerSetup(); })
+multiBtn.addEventListener('click', ()=>{ mode='multi'; openPlayerSetup(); })
+
+openPlayers.addEventListener('click', openPlayerSetup);
+howBtn.addEventListener('click', ()=>{ alert('Take turns answering. Correct answers build combos. Solo: answer through all questions. Multiplayer: each player takes turns. Good luck!') });
+
+toggleMusicBtn.addEventListener('click', ()=>{ // user-triggered music
+  if(!audioCtx) initAudio();
+  if(!musicSourcePlaying){
+    startMusic(); musicSourcePlaying=true; toggleMusicBtn.textContent='Pause Music'; playSfx('click');
+  } else { stopMusic(); musicSourcePlaying=false; toggleMusicBtn.textContent='Play Music'; playSfx('click'); }
+});
+
+resetBtn.addEventListener('click', ()=>{ players=[]; renderPlayerStrip(); menuCard.scrollIntoView({behavior:'smooth'}); playSfx('click') });
+
+startGameBtn.addEventListener('click', ()=>{ if(players.length===0){ alert('Please set up players first (Player Setup).'); return;} startQuiz(); });
+
+/* open player setup panel */
+function openPlayerSetup(){
+  modeSelectEl.classList.add('hidden');
+  playerSetupEl.classList.remove('hidden');
+  // show/hide inputs based on mode
+  document.getElementById('p2').style.display = (mode==='multi') ? 'block' : 'none';
+  document.getElementById('p3').style.display = (mode==='multi') ? 'block' : 'none';
+  document.getElementById('p4').style.display = (mode==='multi') ? 'block' : 'none';
+  playSfx('click');
+}
+
+/* menu navigation */
+function openMenu(){
+  playerSetupEl.classList.add('hidden');
+  modeSelectEl.classList.add('hidden');
+  menuLeft.classList.remove('hidden');
+  menuCard.style.display = 'block';
+}
+
+/* select gamemode */
+function selectGamemode(key){
+  selectedGamemode = key;
+  // highlight cloud icons visually (simple effect)
+  document.querySelectorAll('.icon-card').forEach(n=>n.style.outline='');
+  Array.from(document.querySelectorAll('.icon-card')).find(n=>n.innerText.includes(key.charAt(0).toUpperCase()) )?.style.outline='2px solid rgba(255,255,255,0.06)';
+  document.getElementById('turnIndicator').textContent = 'Selected: ' + key.charAt(0).toUpperCase()+key.slice(1);
+}
+
+/* save players button replaced by native start behavior: use Start button to read input */
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  // capture inputs
+  const v1 = document.getElementById('p1').value.trim();
+  const v2 = document.getElementById('p2').value.trim();
+  const v3 = document.getElementById('p3').value.trim();
+  const v4 = document.getElementById('p4').value.trim();
+  if(mode==='solo'){
+    if(!v1){ alert('Enter your name'); return; }
+    players = [{name:v1,score:0,combo:0}];
+  } else {
+    players = [];
+    if(v1) players.push({name:v1,score:0,combo:0});
+    if(v2) players.push({name:v2,score:0,combo:0});
+    if(v3) players.push({name:v3,score:0,combo:0});
+    if(v4) players.push({name:v4,score:0,combo:0});
+    if(players.length < 2){ alert('Enter at least 2 players for multiplayer'); return; }
+  }
+  playerSetupEl.classList.add('hidden');
+  menuEl.style.display = 'block';
+  renderPlayerStrip();
+  playSfx('click');
+});
+
+/* render players on top */
+function renderPlayerStrip(){
+  playerStrip.innerHTML = '';
+  players.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'player-pill';
+    el.textContent = p.name;
+    playerStrip.appendChild(el);
   });
-  feedbackEl.classList.remove('show');
-  timer=10;updateTimer();
-  clearInterval(interval);
-  interval=setInterval(()=>{
-    timer--;updateTimer();
-    if(timer<=0){selectAnswer(-1);}
+}
+
+/* ---------------------------
+   Full Quiz Data (all topics)
+   --------------------------- */
+const allQuestions = {
+  akit:[
+    {q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},
+    {q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},
+    {q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},
+    {q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},
+    {q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},
+    {q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},
+    {q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},
+    {q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},
+    {q:'2³ = ?',a:['6','8','9','12'],correct:1},
+    {q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}
+  ],
+  planet:[
+    {q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},
+    {q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},
+    {q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},
+    {q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},
+    {q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},
+    {q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},
+    {q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},
+    {q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},
+    {q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},
+    {q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}
+  ],
+  tech:[
+    {q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power Unit','Central Print Unit','Control Program Unit'],correct:0},
+    {q:'HTML is used for?',a:['Styling','Content structure','Programming logic','Database'],correct:1},
+    {q:'Which company makes Windows?',a:['Apple','Microsoft','Google','Linux'],correct:1},
+    {q:'Most popular programming language in 2025?',a:['Python','JavaScript','C++','Rust'],correct:1},
+    {q:'What is AI?',a:['Artificial Intelligence','Automatic Input','Auto Image','Application Interface'],correct:0},
+    {q:'JS stands for?',a:['JavaScript','JavaServer','JustScript','JoinScript'],correct:0},
+    {q:'CSS is for?',a:['Design','Logic','Database','Network'],correct:0},
+    {q:'Tech company Apple founded?',a:['1976','1980','1990','2000'],correct:0},
+    {q:'First search engine?',a:['Google','Archie','Bing','Yahoo'],correct:1},
+    {q:'Device to input text?',a:['Keyboard','Mouse','Monitor','Printer'],correct:0}
+  ],
+  animals:[
+    {q:'Fastest land animal?',a:['Cheetah','Leopard','Horse','Tiger'],correct:0},
+    {q:'King of Jungle?',a:['Lion','Tiger','Elephant','Giraffe'],correct:0},
+    {q:'Largest mammal?',a:['Elephant','Blue Whale','Giraffe','Hippo'],correct:1},
+    {q:'Which animal is known for building dams?',a:['Beaver','Otter','Platypus','Moose'],correct:0},
+    {q:'Animal with longest lifespan?',a:['Turtle','Elephant','Whale','Parrot'],correct:0},
+    {q:'Which animal can fly backwards?',a:['Hummingbird','Bat','Butterfly','Bee'],correct:0},
+    {q:'Which animal sleeps standing?',a:['Horse','Elephant','Cow','Giraffe'],correct:0},
+    {q:'Fastest bird?',a:['Peregrine Falcon','Eagle','Sparrow','Hawk'],correct:0},
+    {q:'Largest land predator?',a:['Polar Bear','Lion','Tiger','Grizzly'],correct:0},
+    {q:'Smallest mammal?',a:['Bumblebee Bat','Mouse','Shrew','Hamster'],correct:0}
+  ],
+  math:[
+    {q:'5 × 6 = ?',a:['30','25','35','20'],correct:0},
+    {q:'Square root of 144?',a:['10','11','12','14'],correct:2},
+    {q:'Pi approx equals?',a:['3.14','3.15','3.41','3.44'],correct:0},
+    {q:'2² + 3² = ?',a:['13','12','15','10'],correct:0},
+    {q:'Factorial 4?',a:['24','12','16','8'],correct:0},
+    {q:'10 ÷ 2 = ?',a:['5','2','10','12'],correct:0},
+    {q:'7 × 8 = ?',a:['56','48','54','52'],correct:0},
+    {q:'Square root of 81?',a:['9','8','7','10'],correct:0},
+    {q:'5³ = ?',a:['125','15','25','75'],correct:0},
+    {q:'0 + 0 = ?',a:['0','1','10','-1'],correct:0}
+  ],
+  trivia:[
+    {q:'Which ocean is largest?',a:['Atlantic','Pacific','Indian','Arctic'],correct:1},
+    {q:'How many continents?',a:['5','6','7','8'],correct:2},
+    {q:'First element on periodic table?',a:['Hydrogen','Helium','Lithium','Oxygen'],correct:0},
+    {q:'Which year did the internet become public?',a:['1983','1990','1995','2000'],correct:2},
+    {q:'Largest desert?',a:['Sahara','Gobi','Kalahari','Arabian'],correct:0},
+    {q:'Tallest mountain?',a:['Everest','K2','Kilimanjaro','Mont Blanc'],correct:0},
+    {q:'Longest river?',a:['Nile','Amazon','Yangtze','Mississippi'],correct:0},
+    {q:'Largest country?',a:['Russia','Canada','China','USA'],correct:0},
+    {q:'Smallest country?',a:['Vatican','Monaco','Malta','Liechtenstein'],correct:0},
+    {q:'Fastest car brand?',a:['Bugatti','Ferrari','Tesla','Lamborghini'],correct:0}
+  ],
+  music:[
+    {q:'Which instrument has valves?',a:['Trumpet','Saxophone','Guitar','Piano'],correct:0},
+    {q:'Which instrument is woodwind?',a:['Trumpet','Saxophone','Drums','Violin'],correct:1},
+    {q:'Which instrument is brass?',a:['Trombone','Saxophone','Flute','Drum'],correct:0},
+    {q:'Trumpet belongs to which family?',a:['Brass','String','Percussion','Woodwind'],correct:0},
+    {q:'Saxophone belongs to which family?',a:['Brass','Woodwind','Percussion','String'],correct:1}
+  ]
+};
+
+/* ---------------------------
+   Gameplay state and helpers
+   --------------------------- */
+let questions = [], qIndex = 0, timer = 10, timerInterval = null, currentPlayerIndex = 0;
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const feedbackEl = document.getElementById('feedback');
+const timerEl = document.getElementById('timer');
+const bar = document.getElementById('bar');
+const leaderboardEl = document.getElementById('leaderboard');
+const comboFireEl = document.getElementById('comboFire');
+const nextBtn = document.getElementById('nextBtn');
+const endBtn = document.getElementById('endBtn');
+const finalLeaderboard = document.getElementById('finalLeaderboard');
+
+function startQuiz(){
+  // default to selectedGamemode
+  questions = JSON.parse(JSON.stringify(allQuestions[selectedGamemode] || allQuestions.akit));
+  qIndex = 0; currentPlayerIndex = 0;
+  players.forEach(p=>{ p.score=0; p.combo=0; });
+  document.getElementById('menuCard').classList.add('hidden');
+  quizCard.classList.remove('hidden');
+  endCard.classList.add('hidden');
+  showQuestion();
+  playSfx('click');
+}
+
+function showQuestion(){
+  const q = questions[qIndex];
+  questionEl.textContent = q.q;
+  optionsEl.innerHTML = '';
+  q.a.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.onclick = ()=>selectAnswer(i);
+    optionsEl.appendChild(btn);
+  });
+  feedbackEl.classList.remove('show'); feedbackEl.textContent = '';
+  timer = 10; updateTimer(); bar.style.width = '100%';
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    timer--; updateTimer();
+    bar.style.width = ((timer/10)*100)+'%';
+    if(timer <= 0){ clearInterval(timerInterval); selectAnswer(-1); }
   },1000);
-  comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
-  turnIndicator.textContent=mode==='solo'?'':'Turn: '+currentPlayer.name;
-  nextBtn.style.display='none';
+  // update current player indicator
+  document.getElementById('turnIndicator').textContent = (mode==='solo') ? 'Solo Mode' : 'Turn: ' + players[currentPlayerIndex].name;
+  nextBtn.style.display = 'none';
   updateLeaderboard();
 }
 
-function updateTimer(){timerEl.textContent='⏰ '+timer+'s';timerEl.style.color=timer<=3?'red':'white';}
+function updateTimer(){ timerEl.textContent = '⏰ ' + timer + 's'; timerEl.style.color = (timer<=3) ? '#ff7676' : '#fff'; }
 
 function selectAnswer(choice){
-  clearInterval(interval);
-  const q=questions[index];
-  const currentPlayer=players[currentPlayerIndex];
-  const correct=q.correct===choice;
-  if(correct){feedbackEl.textContent='✅ Correct!';feedbackEl.classList.add('show');document.body.style.background='linear-gradient(135deg,#00c853,#00695c)';currentPlayer.combo++;currentPlayer.score+=10*currentPlayer.combo;fireConfetti();}
-  else{feedbackEl.textContent='❌ Wrong! Correct: '+q.a[q.correct];feedbackEl.classList.add('show');document.body.style.background='linear-gradient(135deg,#b71c1c,#880e4f)';currentPlayer.combo=0;}
-  comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
-  nextBtn.textContent=mode==='solo'?'Next Question':'Next Player';
-  nextBtn.style.display='block';
+  clearInterval(timerInterval);
+  const q = questions[qIndex];
+  const curr = players[currentPlayerIndex];
+  const correct = q.correct === choice;
+  if(correct){
+    feedbackEl.textContent = 'Correct!';
+    feedbackEl.classList.add('show'); document.body.style.filter = 'none';
+    curr.combo++; curr.score += 10 * curr.combo;
+    playSfx('correct'); fireConfettiSmall();
+  } else {
+    feedbackEl.textContent = 'Wrong! Correct: ' + q.a[q.correct]; feedbackEl.classList.add('show');
+    curr.combo = 0; playSfx('wrong');
+  }
+  comboFireEl.textContent = curr.combo > 1 ? 'Combo x' + curr.combo : '';
+  nextBtn.style.display = 'inline-block';
+  nextBtn.onclick = nextHandler;
   updateLeaderboard();
 }
 
-nextBtn.onclick=()=>{
-  document.body.style.background='linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb)';
-  index++;
-  if(index>=questions.length){endQuiz();return;}
-  if(mode==='multi') currentPlayerIndex=(currentPlayerIndex+1)%players.length;
-  startQuestion();
-};
-
-function updateLeaderboard(){leaderboardEl.innerHTML='';players.forEach(p=>{const div=document.createElement('div');div.className='lb-row';div.textContent=p.name+' • '+p.score+' pts';leaderboardEl.appendChild(div);});}
-
-function endQuiz(){
-  quizEl.classList.add('hidden');
-  endEl.classList.remove('hidden');
-  finalLeaderboardEl.innerHTML='';
-  players.sort((a,b)=>b.score-a.score).forEach(p=>{
-    const row=document.createElement('div');row.className='lb-row';row.textContent=p.name+' • '+p.score+' pts';finalLeaderboardEl.appendChild(row);
-  });
-  confettiEl.innerHTML='🎉🎉🎉';
+function nextHandler(){
+  // restore background gradient
+  document.body.style.filter = '';
+  qIndex++;
+  if(qIndex >= questions.length){ endQuiz(); return; }
+  if(mode === 'multi'){ currentPlayerIndex = (currentPlayerIndex + 1) % players.length; }
+  showQuestion();
 }
 
-endMenuBtn.onclick=()=>{
-  endEl.classList.add('hidden');modeSelectEl.classList.remove('hidden');document.body.style.background='linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb)';confettiEl.innerHTML='';players=[];currentPlayerIndex=0;index=0;
-};
+endBtn.addEventListener('click', ()=> { if(confirm('End quiz early?')) endQuiz(); });
 
-function fireConfetti(){confettiEl.innerHTML='🎊🎊🎊';setTimeout(()=>{confettiEl.innerHTML='';},1000);}
+function updateLeaderboard(){
+  leaderboardEl.innerHTML = '';
+  players.forEach(p=>{
+    const row = document.createElement('div'); row.className = 'lb-row';
+    row.innerHTML = `<div>${p.name}</div><div>${p.score} pts</div>`;
+    leaderboardEl.appendChild(row);
+  });
+}
+
+function endQuiz(){
+  quizCard.classList.add('hidden'); endCard.classList.remove('hidden');
+  finalLeaderboard.innerHTML = '';
+  players.sort((a,b)=>b.score-a.score).forEach(p=>{
+    const r = document.createElement('div'); r.className = 'lb-row'; r.textContent = p.name + ' • ' + p.score + ' pts';
+    finalLeaderboard.appendChild(r);
+  });
+  playSfx('win');
+  // celebratory confetti
+  confettiEl.innerHTML = '🎉 🎉 🎉';
+  setTimeout(()=> confettiEl.innerHTML = '', 1500);
+}
+
+/* ---------------------------
+   SFX routing to AudioContext
+   --------------------------- */
+let audioCtx = null, musicSourcePlaying = false;
+function playSfx(type){ try{ if(!audioCtx) initAudio(); playSfxInternal(type); }catch(e){console.warn(e)} }
+function playSfxInternal(type){
+  // use the earlier functions defined in the audio block
+  if(typeof window !== 'undefined' && typeof window.playSfx === 'function'){
+    // audio functions already available
+    window.playSfx(type);
+  } else {
+    // fallback beep
+    console.log('sfx '+type);
+  }
+}
+
+/* ---------------------------
+   simple confetti
+   --------------------------- */
+function fireConfettiSmall(){
+  const spot = document.createElement('div');
+  spot.style.position='absolute'; spot.style.left='50%'; spot.style.top='20%';
+  spot.style.transform='translate(-50%,-50%)'; spot.style.fontSize='26px'; spot.textContent='🎊';
+  confettiEl.appendChild(spot);
+  setTimeout(()=>spot.remove(),900);
+}
+
+/* ---------------------------
+   Kickoff: select default gamemode & prepare UI
+   --------------------------- */
+selectGamemode('akit');
+document.getElementById('backMenuBtn').addEventListener('click', ()=>{
+  endCard.classList.add('hidden'); menuCard.classList.remove('hidden'); players=[]; renderPlayerStrip();
+});
+document.getElementById('viewScores').addEventListener('click', ()=>{ alert('Scores: ' + players.map(p=>p.name+': '+p.score).join(', ')) });
+
+/* small keyboard shortcuts */
+window.addEventListener('keydown', (e)=>{ if(e.key==='m'){ toggleMusicBtn.click(); } if(e.key==='s'){ playSfx('click'); } });
+
+/* ensure we expose playSfx to other scopes (used earlier) */
+window.playSfx = playSfxInternal;
+
+/* End script */
 </script>
 </body>
 </html>
-
