@@ -2,186 +2,107 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKit Fun Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AKit Quiz</title>
 <style>
-* { box-sizing: border-box; margin:0; padding:0; font-family: 'Poppins', sans-serif; }
-body { background: linear-gradient(135deg,#0f0c29,#302b63,#24243e); color:white; display:flex; justify-content:center; align-items:center; height:100vh; transition: background 0.6s; overflow:hidden; }
-.container { width:90%; max-width:900px; text-align:center; transition: all 0.5s ease; }
-h1 { font-size: 3rem; margin-bottom:20px; animation: fadeIn 1s; }
-button { padding:12px 20px; margin:8px; border:none; border-radius:12px; background:#00aaff; color:white; font-size:1.1rem; cursor:pointer; transition: transform 0.2s, background 0.3s; }
-button:hover { transform: scale(1.1); background:#00ccff; }
-input { padding:10px; margin:5px; border-radius:10px; border:none; outline:none; font-size:1rem; }
-.menu, .playerSetup, .modeSelect, #quiz, #end { display:none; flex-direction:column; align-items:center; gap:12px; }
-.feedback { font-size:1.3rem; margin:8px 0; opacity:0; transition:0.3s; transform: scale(0.9); }
-.feedback.show { opacity:1; transform: scale(1); }
-.timer { margin-top:5px; font-size:1rem; }
-.progress { height:10px; background:rgba(255,255,255,0.2); border-radius:5px; margin:15px 0; overflow:hidden; }
-.lb-row { display:flex; justify-content:space-between; padding:4px 0; }
-.turnIndicator { margin-top:10px; font-size:1.1rem; color:#ffd700; }
-.comboFire { color:#ffdd00; font-weight:bold; margin-top:5px; }
-.achievements { margin-top:10px; font-size:0.9rem; color:#00ffea; }
-.confetti { position:fixed; width:100%; height:100%; pointer-events:none; top:0; left:0; z-index:999; font-size:2rem; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
-.audio-controls { margin-top:10px; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{box-sizing:border-box;font-family:'Poppins',sans-serif;margin:0;padding:0;}
+body{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;display:flex;justify-content:center;align-items:center;height:100vh;transition:background 0.6s;overflow:hidden;}
+.container{width:95%;max-width:900px;text-align:center;position:relative;}
+h1{font-size:3rem;margin-bottom:20px;text-shadow:0 0 10px #00ccff;}
+button{margin:8px;padding:12px 22px;font-size:1.2rem;border:none;border-radius:12px;background:#00aaff;color:white;cursor:pointer;transition:0.3s;}
+button:hover{transform:scale(1.1);background:#00ccff;}
+input{padding:10px;margin:5px;border-radius:10px;border:none;outline:none;width:60%;}
+.question{font-size:1.6rem;margin:20px 0;}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;}
+.feedback{font-size:1.4rem;margin:10px 0;opacity:0;transition:0.3s;transform:scale(0.9);}
+.feedback.show{opacity:1;transform:scale(1);}
+.timer{margin-top:5px;font-size:1.1rem;}
+.progress{height:12px;background:rgba(255,255,255,0.2);border-radius:6px;margin:15px 0;overflow:hidden;}
+.bar{height:100%;width:0%;background:#00ccff;transition:width 0.3s;}
+.menu,.playerSetup,.modeSelect{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeIn 1s;}
+.leaderboard{background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;margin-top:12px;}
+.lb-row{display:flex;justify-content:space-between;padding:4px 0;}
+.turnIndicator{margin-top:10px;font-size:1.2rem;color:#ffd700;}
+.comboFire{color:#ffdd00;font-weight:bold;margin-top:5px;}
+.achievements{margin-top:10px;font-size:1rem;color:#00ffea;}
+.confetti{position:fixed;width:100%;height:100%;pointer-events:none;top:0;left:0;z-index:999;font-size:2rem;}
+.fadeScreen{animation:fadeScreen 0.5s;}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(-20px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes fadeScreen{0%{opacity:0;}100%{opacity:1;}}
 </style>
 </head>
 <body>
 <div class="container">
 
-<h1>AKit Quiz</h1>
+<h1>AKit Quiz 🎵</h1>
 
-<!-- Music -->
-<audio id="bgMusic" src="https://cdn.pixabay.com/audio/2023/03/14/audio_3e8e0f7cd0.mp3" loop autoplay></audio>
-<div class="audio-controls">
-<button onclick="toggleMusic()">⏯️ Play/Pause</button>
+<div class="modeSelect" id="modeSelect">
+  <p>Select your mode:</p>
+  <button id="soloBtn">Solo Mode</button>
+  <button id="multiBtn">Multiplayer Mode</button>
+  <button id="playMusicBtn">Play Music</button>
 </div>
 
-<!-- Home Screen -->
-<div class="modeSelect" id="modeSelect" style="display:flex;">
-<p>Select Mode:</p>
-<button class="mode-btn" id="soloBtn">Solo</button>
-<button class="mode-btn" id="multiBtn">Multiplayer</button>
+<div class="playerSetup" id="playerSetup" style="display:none">
+  <p>Enter player names:</p>
+  <input id="p1" placeholder="Player 1">
+  <input id="p2" placeholder="Player 2">
+  <input id="p3" placeholder="Player 3">
+  <input id="p4" placeholder="Player 4">
+  <button id="startBtn">Next</button>
 </div>
 
-<!-- Player Setup -->
-<div class="playerSetup" id="playerSetup">
-<p>Enter player names:</p>
-<input id="p1" placeholder="Player 1">
-<input id="p2" placeholder="Player 2">
-<input id="p3" placeholder="Player 3">
-<input id="p4" placeholder="Player 4">
-<button id="startBtn">Next</button>
+<div class="menu" id="menu" style="display:none">
+  <p>Select a quiz topic:</p>
+  <button class="menu-btn" id="akitBtn">AKit Quiz</button>
+  <button class="menu-btn" id="planetBtn">Planet Quiz</button>
+  <button class="menu-btn" id="techBtn">Technology Quiz</button>
+  <button class="menu-btn" id="animalsBtn">Animals Quiz</button>
+  <button class="menu-btn" id="mathBtn">Math Quiz</button>
+  <button class="menu-btn" id="triviaBtn">Trivia Quiz</button>
+  <button class="menu-btn" id="musicBtn">Music Quiz</button>
 </div>
 
-<!-- Menu -->
-<div class="menu" id="menu">
-<p>Select a quiz topic:</p>
-<button class="menu-btn" id="akitBtn">AKit Quiz</button>
-<button class="menu-btn" id="planetBtn">Planet Quiz</button>
-<button class="menu-btn" id="techBtn">Technology Quiz</button>
-<button class="menu-btn" id="animalsBtn">Animals Quiz</button>
-<button class="menu-btn" id="mathBtn">Math Quiz</button>
-<button class="menu-btn" id="triviaBtn">Random Trivia</button>
-<button class="menu-btn" id="musicBtn">Music Quiz (Trumpet & Saxophone)</button>
+<div id="quiz" style="display:none">
+  <div class="turnIndicator" id="turnIndicator"></div>
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="timer" id="timer"></div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="comboFire" id="comboFire"></div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <div class="achievements" id="achievements"></div>
+  <button id="nextBtn" style="display:none;margin-top:10px;"></button>
 </div>
 
-<!-- Quiz -->
-<div id="quiz">
-<div class="turnIndicator" id="turnIndicator"></div>
-<div class="question" id="question"></div>
-<div class="options" id="options"></div>
-<div class="feedback" id="feedback"></div>
-<div class="timer" id="timer"></div>
-<div class="progress"><div class="bar" id="bar"></div></div>
-<div class="comboFire" id="comboFire"></div>
-<div class="leaderboard" id="leaderboard"></div>
-<div class="achievements" id="achievements"></div>
-<button id="nextBtn" style="display:none;margin-top:10px;"></button>
-</div>
-
-<!-- End Screen -->
-<div class="end" id="end">
-<h2>Quiz Finished</h2>
-<div class="leaderboard" id="finalLeaderboard"></div>
-<button id="endMenuBtn">Back to Menu</button>
+<div class="end" id="end" style="display:none">
+  <h2>Quiz Finished 🎉</h2>
+  <div class="leaderboard" id="finalLeaderboard"></div>
+  <button id="endMenuBtn">Back to Menu</button>
 </div>
 
 <div class="confetti" id="confetti"></div>
 
-<script>
-// background music toggle
-function toggleMusic() {
-  const music = document.getElementById('bgMusic');
-  if (music.paused) music.play(); else music.pause();
-}
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2023/03/03/audio_3425e1119e.mp3?filename=calm-cartoon-beat-131bpm-11911.mp3" type="audio/mpeg">
+</audio>
 
-// Questions database
-const allQuestions = {
-akit: [
-{q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},
-{q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},
-{q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},
-{q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},
-{q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},
-{q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},
-{q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},
-{q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},
-{q:'2³ = ?',a:['6','8','9','12'],correct:1},
-{q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}
-],
-planet: [
-{q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},
-{q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},
-{q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},
-{q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},
-{q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},
-{q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},
-{q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},
-{q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},
-{q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},
-{q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}
-],
-tech: [
-{q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power Unit','Central Print Unit','Control Program Unit'],correct:0},
-{q:'HTML is used for?',a:['Styling','Content structure','Programming logic','Database'],correct:1},
-{q:'Which company makes Windows?',a:['Apple','Microsoft','Google','Linux'],correct:1},
-{q:'Most popular programming language in 2025?',a:['Python','JavaScript','C++','Rust'],correct:1},
-{q:'What is AI?',a:['Artificial Intelligence','Automatic Input','Auto Image','Application Interface'],correct:0},
-{q:'JS stands for?',a:['JavaScript','JavaServer','JustScript','JoinScript'],correct:0},
-{q:'CSS is for?',a:['Design','Logic','Database','Network'],correct:0},
-{q:'Tech company Apple founded?',a:['1976','1980','1990','2000'],correct:0},
-{q:'First search engine?',a:['Google','Archie','Bing','Yahoo'],correct:1},
-{q:'Device to input text?',a:['Keyboard','Mouse','Monitor','Printer'],correct:0}
-],
-animals: [
-{q:'Fastest land animal?',a:['Cheetah','Leopard','Horse','Tiger'],correct:0},
-{q:'King of Jungle?',a:['Lion','Tiger','Elephant','Giraffe'],correct:0},
-{q:'Largest mammal?',a:['Elephant','Blue Whale','Giraffe','Hippo'],correct:1},
-{q:'Which animal is known for building dams?',a:['Beaver','Otter','Platypus','Moose'],correct:0},
-{q:'Animal with longest lifespan?',a:['Turtle','Elephant','Whale','Parrot'],correct:0},
-{q:'Which animal can fly backwards?',a:['Hummingbird','Bat','Butterfly','Bee'],correct:0},
-{q:'Which animal sleeps standing?',a:['Horse','Elephant','Cow','Giraffe'],correct:0},
-{q:'Fastest bird?',a:['Peregrine Falcon','Eagle','Sparrow','Hawk'],correct:0},
-{q:'Largest land predator?',a:['Polar Bear','Lion','Tiger','Grizzly'],correct:0},
-{q:'Smallest mammal?',a:['Bumblebee Bat','Mouse','Shrew','Hamster'],correct:0}
-],
-math: [
-{q:'5 × 6 = ?',a:['30','25','35','20'],correct:0},
-{q:'Square root of 144?',a:['10','11','12','14'],correct:2},
-{q:'Pi approx equals?',a:['3.14','3.15','3.41','3.44'],correct:0},
-{q:'2² + 3² = ?',a:['13','12','15','10'],correct:0},
-{q:'Factorial 4?',a:['24','12','16','8'],correct:0},
-{q:'10 ÷ 2 = ?',a:['5','2','10','12'],correct:0},
-{q:'7 × 8 = ?',a:['56','48','54','52'],correct:0},
-{q:'Square root of 81?',a:['9','8','7','10'],correct:0},
-{q:'5³ = ?',a:['125','15','25','75'],correct:0},
-{q:'0 + 0 = ?',a:['0','1','10','-1'],correct:0}
-],
-trivia: [
-{q:'Which ocean is largest?',a:['Atlantic','Pacific','Indian','Arctic'],correct:1},
-{q:'How many continents?',a:['5','6','7','8'],correct:2},
-{q:'First element on periodic table?',a:['Hydrogen','Helium','Lithium','Oxygen'],correct:0},
-{q:'Which year did the internet become public?',a:['1983','1990','1995','2000'],correct:2},
-{q:'Largest desert?',a:['Sahara','Gobi','Kalahari','Arabian'],correct:0},
-{q:'Tallest mountain?',a:['Everest','K2','Kilimanjaro','Mont Blanc'],correct:0},
-{q:'Longest river?',a:['Nile','Amazon','Yangtze','Mississippi'],correct:0},
-{q:'Largest country?',a:['Russia','Canada','China','USA'],correct:0},
-{q:'Smallest country?',a:['Vatican','Monaco','Malta','Liechtenstein'],correct:0},
-{q:'Fastest car brand?',a:['Bugatti','Ferrari','Tesla','Lamborghini'],correct:0}
-],
-music: [
-{q:'Trumpet is a type of?',a:['String','Wind','Percussion','Keyboard'],correct:1},
-{q:'Saxophone belongs to which family?',a:['String','Brass','Woodwind','Percussion'],correct:2},
-{q:'Which note is commonly the first learned on trumpet?',a:['C','G','F','D'],correct:0},
-{q:'Trumpet is often used in?',a:['Classical','Jazz','Rock','All'],correct:3},
-{q:'Saxophone is most popular in?',a:['Jazz','Metal','EDM','Country'],correct:0}
-]
+<script>
+// Questions database (including Music Quiz)
+const allQuestions={
+akit:[{q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},{q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},{q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},{q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},{q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},{q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},{q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},{q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},{q:'2³ = ?',a:['6','8','9','12'],correct:1},{q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}],
+planet:[{q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},{q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},{q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},{q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},{q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},{q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},{q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},{q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},{q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},{q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}],
+tech:[{q:'What does CPU stand for?',a:['Central Processing Unit','Computer Power Unit','Central Print Unit','Control Program Unit'],correct:0},{q:'HTML is used for?',a:['Styling','Content structure','Programming logic','Database'],correct:1},{q:'Which company makes Windows?',a:['Apple','Microsoft','Google','Linux'],correct:1},{q:'Most popular programming language in 2025?',a:['Python','JavaScript','C++','Rust'],correct:1},{q:'What is AI?',a:['Artificial Intelligence','Automatic Input','Auto Image','Application Interface'],correct:0},{q:'JS stands for?',a:['JavaScript','JavaServer','JustScript','JoinScript'],correct:0},{q:'CSS is for?',a:['Design','Logic','Database','Network'],correct:0},{q:'Tech company Apple founded?',a:['1976','1980','1990','2000'],correct:0},{q:'First search engine?',a:['Google','Archie','Bing','Yahoo'],correct:1},{q:'Device to input text?',a:['Keyboard','Mouse','Monitor','Printer'],correct:0}],
+animals:[{q:'Fastest land animal?',a:['Cheetah','Leopard','Horse','Tiger'],correct:0},{q:'King of Jungle?',a:['Lion','Tiger','Elephant','Giraffe'],correct:0},{q:'Largest mammal?',a:['Elephant','Blue Whale','Giraffe','Hippo'],correct:1},{q:'Which animal is known for building dams?',a:['Beaver','Otter','Platypus','Moose'],correct:0},{q:'Animal with longest lifespan?',a:['Turtle','Elephant','Whale','Parrot'],correct:0},{q:'Which animal can fly backwards?',a:['Hummingbird','Bat','Butterfly','Bee'],correct:0},{q:'Which animal sleeps standing?',a:['Horse','Elephant','Cow','Giraffe'],correct:0},{q:'Fastest bird?',a:['Peregrine Falcon','Eagle','Sparrow','Hawk'],correct:0},{q:'Largest land predator?',a:['Polar Bear','Lion','Tiger','Grizzly'],correct:0},{q:'Smallest mammal?',a:['Bumblebee Bat','Mouse','Shrew','Hamster'],correct:0}],
+math:[{q:'5 × 6 = ?',a:['30','25','35','20'],correct:0},{q:'Square root of 144?',a:['10','11','12','14'],correct:2},{q:'Pi approx equals?',a:['3.14','3.15','3.41','3.44'],correct:0},{q:'2² + 3² = ?',a:['13','12','15','10'],correct:0},{q:'Factorial 4?',a:['24','12','16','8'],correct:0},{q:'10 ÷ 2 = ?',a:['5','2','10','12'],correct:0},{q:'7 × 8 = ?',a:['56','48','54','52'],correct:0},{q:'Square root of 81?',a:['9','8','7','10'],correct:0},{q:'5³ = ?',a:['125','15','25','75'],correct:0},{q:'0 + 0 = ?',a:['0','1','10','-1'],correct:0}],
+trivia:[{q:'Which ocean is largest?',a:['Atlantic','Pacific','Indian','Arctic'],correct:1},{q:'How many continents?',a:['5','6','7','8'],correct:2},{q:'First element on periodic table?',a:['Hydrogen','Helium','Lithium','Oxygen'],correct:0},{q:'Which year did the internet become public?',a:['1983','1990','1995','2000'],correct:2},{q:'Largest desert?',a:['Sahara','Gobi','Kalahari','Arabian'],correct:0},{q:'Tallest mountain?',a:['Everest','K2','Kilimanjaro','Mont Blanc'],correct:0},{q:'Longest river?',a:['Nile','Amazon','Yangtze','Mississippi'],correct:0},{q:'Largest country?',a:['Russia','Canada','China','USA'],correct:0},{q:'Smallest country?',a:['Vatican','Monaco','Malta','Liechtenstein'],correct:0},{q:'Fastest car brand?',a:['Bugatti','Ferrari','Tesla','Lamborghini'],correct:0}],
+music:[{q:'Which instrument has valves?',a:['Trumpet','Saxophone','Drums','Piano'],correct:0},{q:'Which is a woodwind?',a:['Trumpet','Saxophone','Trombone','Guitar'],correct:1},{q:'Trumpet is typically made of?',a:['Brass','Wood','Plastic','Steel'],correct:0},{q:'Saxophone invented by?',a:['Adolphe Sax','Louis Armstrong','John Coltrane','Miles Davis'],correct:0},{q:'Saxophone uses which reed?',a:['Single','Double','Triple','None'],correct:0}]
 };
 
 // State
-let players=[], currentPlayerIndex=0, questions=[], index=0, interval, timer=10, mode='solo';
+let players=[],currentPlayerIndex=0,questions=[],index=0,interval,timer=10,mode='solo';
 
 // Elements
 const modeSelect=document.getElementById('modeSelect');
@@ -205,6 +126,15 @@ const finalLeaderboardEl=document.getElementById('finalLeaderboard');
 const endMenuBtn=document.getElementById('endMenuBtn');
 const achievementsEl=document.getElementById('achievements');
 const confettiEl=document.getElementById('confetti');
+const playMusicBtn=document.getElementById('playMusicBtn');
+const bgMusic=document.getElementById('bgMusic');
+
+// Play music button
+let musicPlaying=false;
+playMusicBtn.onclick=()=>{
+  if(!musicPlaying){bgMusic.play();playMusicBtn.textContent='Pause Music';musicPlaying=true;}
+  else{bgMusic.pause();playMusicBtn.textContent='Play Music';musicPlaying=false;}
+};
 
 // Mode selection
 soloBtn.onclick=()=>{mode='solo';modeSelect.style.display='none';playerSetup.style.display='flex';document.getElementById('p2').style.display='none';document.getElementById('p3').style.display='none';document.getElementById('p4').style.display='none';};
@@ -215,33 +145,33 @@ startBtn.onclick=()=>{
   players=[];
   if(mode==='solo'){
     const name=document.getElementById('p1').value.trim();
-    if(!name){alert('Enter your name'); return;}
+    if(!name){alert('Enter your name');return;}
     players.push({name,score:0,combo:0});
-  } else {
+  }else{
     for(let i=1;i<=4;i++){
       const val=document.getElementById('p'+i).value.trim();
-      if(val) players.push({name:val,score:0,combo:0});
+      if(val)players.push({name:val,score:0,combo:0});
     }
-    if(players.length<2){alert('Enter at least 2 names'); return;}
+    if(players.length<2){alert('Enter at least 2 names');return;}
   }
   playerSetup.style.display='none';
   menuEl.style.display='flex';
 };
 
-// Menu selection
+// Menu topic selection
 for(const btn of document.querySelectorAll('.menu-btn')){
   btn.onclick=()=>{
     const topic=btn.id.replace('Btn','').toLowerCase();
     questions=[...allQuestions[topic]];
     index=0;
     menuEl.style.display='none';
-    quizEl.style.display='flex';
+    quizEl.style.display='block';
     currentPlayerIndex=0;
     startQuestion();
   };
 }
 
-// Question start
+// Start question
 function startQuestion(){
   const currentPlayer=players[currentPlayerIndex];
   questionEl.textContent=questions[index].q;
@@ -253,33 +183,42 @@ function startQuestion(){
     optionsEl.appendChild(b);
   });
   feedbackEl.classList.remove('show');
-  timer=10; updateTimer();
+  timer=10;
+  updateTimer();
   clearInterval(interval);
-  interval=setInterval(()=>{ timer--; updateTimer(); if(timer<=0) selectAnswer(-1); },1000);
+  interval=setInterval(()=>{
+    timer--;
+    updateTimer();
+    if(timer<=0) selectAnswer(-1);
+  },1000);
   comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
   turnIndicator.textContent=mode==='solo'?'':'Turn: '+currentPlayer.name;
   nextBtn.style.display='none';
   updateLeaderboard();
 }
 
-// Timer
-function updateTimer(){ timerEl.textContent='⏰ '+timer+'s'; timerEl.style.color=timer<=3?'red':'white'; }
+// Timer update
+function updateTimer(){
+  timerEl.textContent='⏰ '+timer+'s';
+  timerEl.style.color=timer<=3?'red':'white';
+  bar.style.width=((10-timer)/10*100)+'%';
+}
 
 // Select answer
 function selectAnswer(choice){
   clearInterval(interval);
   const q=questions[index];
   const currentPlayer=players[currentPlayerIndex];
-  const correct=q.correct===choice;
+  let correct=q.correct===choice;
   if(correct){
-    feedbackEl.textContent='Correct!';
+    feedbackEl.textContent='✅ Correct!';
     feedbackEl.classList.add('show');
     document.body.style.background='linear-gradient(135deg,#00c853,#00695c)';
     currentPlayer.combo++;
     currentPlayer.score+=10*currentPlayer.combo;
     fireConfetti();
-  } else {
-    feedbackEl.textContent='Wrong! Correct: '+q.a[q.correct];
+  }else{
+    feedbackEl.textContent='❌ Wrong! Correct: '+q.a[q.correct];
     feedbackEl.classList.add('show');
     document.body.style.background='linear-gradient(135deg,#b71c1c,#880e4f)';
     currentPlayer.combo=0;
@@ -287,13 +226,18 @@ function selectAnswer(choice){
   comboFireEl.textContent=currentPlayer.combo>1?'🔥 Combo x'+currentPlayer.combo:'';
   nextBtn.textContent=mode==='solo'?'Next Question':'Next Player';
   nextBtn.style.display='block';
-  saveProgress();
   updateLeaderboard();
   updateAchievements(currentPlayer);
 }
 
-// Next
-nextBtn.onclick=()=>{ document.body.style.background='linear-gradient(135deg,#0f0c29,#302b63,#24243e)'; index++; if(index>=questions.length){ endQuiz(); return;} if(mode==='multi') currentPlayerIndex=(currentPlayerIndex+1)%players.length; startQuestion(); }
+// Next question/player
+nextBtn.onclick=()=>{
+  document.body.style.background='linear-gradient(135deg,#0f0c29,#302b63,#24243e)';
+  index++;
+  if(index>=questions.length){endQuiz();return;}
+  if(mode==='multi') currentPlayerIndex=(currentPlayerIndex+1)%players.length;
+  startQuestion();
+}
 
 // Leaderboard
 function updateLeaderboard(){
@@ -306,12 +250,12 @@ function updateLeaderboard(){
   });
 }
 
-// End
+// End quiz
 function endQuiz(){
   quizEl.style.display='none';
-  endEl.style.display='flex';
+  endEl.style.display='block';
   finalLeaderboardEl.innerHTML='';
-  players.sort((a,b)=>b.score-a.score).forEach(p=>{
+  players.sort((a,b)=>b.score-b.score).forEach(p=>{
     const row=document.createElement('div');
     row.className='lb-row';
     row.textContent=p.name+' • '+p.score+' pts';
@@ -326,7 +270,9 @@ endMenuBtn.onclick=()=>{
   modeSelect.style.display='flex';
   document.body.style.background='linear-gradient(135deg,#0f0c29,#302b63,#24243e)';
   confettiEl.innerHTML='';
-  players=[]; currentPlayerIndex=0; index=0;
+  players=[];
+  currentPlayerIndex=0;
+  index=0;
 }
 
 // Achievements
@@ -342,10 +288,6 @@ function fireConfetti(){
   confettiEl.innerHTML='🎊🎊🎊';
   setTimeout(()=>{confettiEl.innerHTML='';},1000);
 }
-
-// Save placeholder
-function saveProgress(){ }
 </script>
-
 </body>
 </html>
