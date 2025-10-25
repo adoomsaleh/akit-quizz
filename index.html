@@ -3,129 +3,131 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AKit — Quiz (Soft Lo-Fi)</title>
+<title>AKit — Calm Lo-Fi Quiz</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg1:#20123a;
-  --bg2:#4d2b8a;
-  --panel: rgba(255,255,255,0.03);
-  --glass: rgba(255,255,255,0.06);
-  --accent:#7ef9ff;
-  --muted: rgba(255,255,255,0.8);
+  --bg1:#0f1026;
+  --bg2:#2b1b4a;
+  --card-bg: rgba(255,255,255,0.03);
+  --glass: rgba(255,255,255,0.05);
+  --accent: #8be7e0;
+  --muted: rgba(255,255,255,0.85);
   --round:16px;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(160deg,var(--bg1),#2b1b5f 40%,var(--bg2));color:#fff;overflow:hidden}
+html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:#fff;overflow:hidden}
 .app{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.shell{width:100%;height:100%;max-width:1200px;max-height:900px;border-radius:20px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 30px 60px rgba(0,0,0,0.6);display:grid;grid-template-columns:360px 1fr;gap:18px;position:relative;overflow:hidden}
-.header{display:flex;align-items:center;gap:12px}
-.logo{width:84px;height:84px;border-radius:14px;background:linear-gradient(135deg,#ffd6a5,#ff9a9e);display:flex;align-items:center;justify-content:center;font-family:"Baloo 2",cursive;color:#222;font-weight:900;font-size:28px;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+.shell{
+  width:100%;max-width:1100px;height:90vh;border-radius:20px;padding:20px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  display:grid;grid-template-columns:380px 1fr;gap:18px;position:relative;overflow:hidden;
+}
+
+/* Left column: home */
+.left{
+  padding:18px;border-radius:14px;background:var(--card-bg);border:1px solid rgba(255,255,255,0.03);
+  display:flex;flex-direction:column;gap:14px;align-items:stretch;
+}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{
+  width:84px;height:84px;border-radius:14px;background:linear-gradient(135deg,#fff3c6,#ffd6a5);display:flex;align-items:center;justify-content:center;font-family:"Baloo 2",cursive;color:#221;font-weight:900;font-size:24px;box-shadow:0 10px 30px rgba(0,0,0,0.35)
+}
 .title{font-family:"Baloo 2",cursive;font-size:22px;margin:0}
 .subtitle{font-size:12px;color:var(--muted)}
-.left{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px;position:relative}
-.right{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.04), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px;overflow:auto}
-.big-btn{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:none;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));cursor:pointer;color:#fff;font-weight:700;transition:all .18s}
-.big-btn:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(0,0,0,0.45)}
-.k{width:46px;height:46px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+
+/* mode buttons */
+.modes{display:flex;flex-direction:column;gap:10px}
+.big-btn{
+  display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:none;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));cursor:pointer;color:#fff;font-weight:700;transition:transform .16s, box-shadow .16s;
+}
+.big-btn:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(0,0,0,0.45)}
+.k{width:48px;height:48px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
 .controls{display:flex;gap:8px;flex-wrap:wrap}
 .small-btn{padding:8px 12px;border-radius:10px;border:none;background:#00aaff;color:#fff;cursor:pointer;font-weight:700}
-.icon-cloud{display:flex;flex-wrap:wrap;gap:10px;padding:8px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));}
-.icon-card{width:100px;height:84px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .18s}
-.icon-card:hover{transform:translateY(-8px);box-shadow:0 14px 30px rgba(0,0,0,0.35)}
 
-.mascot{position:absolute;left:14px;bottom:14px;width:100px;height:100px;border-radius:14px;background:linear-gradient(135deg,#fff2cc,#ffd6a5);display:flex;align-items:center;justify-content:center;color:#222;font-weight:900;font-family:"Baloo 2",cursive;font-size:22px;box-shadow:0 14px 40px rgba(0,0,0,0.5);animation:mascot 3.4s ease-in-out infinite}
-@keyframes mascot{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+/* icon cloud */
+.icon-cloud{display:flex;flex-wrap:wrap;gap:10px;padding:8px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));}
+.icon-card{width:96px;height:84px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .18s}
+.icon-card:hover{transform:translateY(-6px);box-shadow:0 12px 26px rgba(0,0,0,0.35)}
+.icon-emoji{font-size:28px}
+.icon-label{font-size:12px;color:var(--muted);margin-top:6px}
 
-.floating{position:absolute;z-index:8;pointer-events:none}
-.f1{right:20px;top:20px}
-.f2{right:120px;top:130px}
-.f3{left:140px;top:40px}
-.f4{right:34px;bottom:140px}
-.f5{left:200px;bottom:60px}
-
-/* right column quiz */
+/* right: quiz area */
+.right{padding:18px;border-radius:14px;background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:12px}
 .topbar{display:flex;justify-content:space-between;align-items:center}
 .players{display:flex;gap:8px;align-items:center}
 .player-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));font-weight:700}
 .turnIndicator{color:var(--accent);font-weight:800}
 
-.quiz-card{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px}
+.quiz-card{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:12px}
 .question{font-weight:800;font-size:18px}
 .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .option-btn{padding:12px;border-radius:12px;border:none;background:linear-gradient(180deg,#ffffff06,#ffffff03);cursor:pointer;font-weight:800;transition:transform .12s}
 .option-btn:hover{transform:translateY(-6px);box-shadow:0 12px 26px rgba(0,0,0,0.35)}
-.feedback{font-weight:800;min-height:24px;transition:all .2s}
+.feedback{font-weight:800;min-height:24px}
 .timer{font-weight:700}
 .progress{height:10px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden}
 .bar{height:100%;width:0%;background:linear-gradient(90deg,#7ef9ff,#7ef9b5);transition:width .3s}
 
-/* end */
-.hidden{display:none !important}
+.hidden{display:none}
 
-/* small screens */
+/* subtle particles layer */
+#particles{position:absolute;inset:0;z-index:0;pointer-events:none}
+
+/* responsive */
 @media (max-width:980px){
-  .shell{grid-template-columns:1fr;max-height:none;height:100%}
-  .mascot{display:none}
-  .floating{display:none}
+  .shell{grid-template-columns:1fr;height:100%}
+  .logo{width:64px;height:64px;font-size:18px}
 }
 </style>
 </head>
 <body>
-<div class="app" id="app">
+<div class="app">
   <div class="shell" id="shell">
-    <!-- LEFT: HOME / MODE -->
+    <!-- particles canvas -->
+    <canvas id="particles"></canvas>
+
+    <!-- LEFT: home -->
     <div class="left" id="left">
-      <div style="display:flex;align-items:center;gap:12px">
+      <div class="brand">
         <div class="logo">AKit</div>
         <div>
-          <div class="title">AKit!</div>
-          <div class="subtitle">Quizzes • Music • Chaos — pick a mode and play</div>
+          <div class="title">AKit Quiz</div>
+          <div class="subtitle">Calm lo-fi, quizzes, and good vibes</div>
         </div>
+      </div>
+
+      <div class="modes">
+        <button class="big-btn" id="soloBtn"><div class="k">S</div>Solo Mode <div style="margin-left:auto;font-size:12px;color:var(--muted)">Single player</div></button>
+        <button class="big-btn" id="multiBtn"><div class="k">M</div>Multiplayer <div style="margin-left:auto;font-size:12px;color:var(--muted)">Up to 4 players</div></button>
+      </div>
+
+      <div class="controls">
+        <button class="small-btn" id="openPlayers">Player Setup</button>
+        <button class="small-btn" id="how">How to Play</button>
+        <button class="small-btn" id="musicToggle" data-want="off">Play Music</button>
       </div>
 
       <div style="margin-top:12px">
-        <div class="modes" id="modes">
-          <button class="big-btn" id="soloBtn"><div class="k">S</div> Solo Mode <div style="margin-left:auto;font-size:12px;color:var(--muted)">Single player</div></button>
-          <button class="big-btn" id="multiBtn"><div class="k">M</div> Multiplayer <div style="margin-left:auto;font-size:12px;color:var(--muted)">Up to 4 players</div></button>
-        </div>
-
-        <div class="controls" style="margin-top:10px">
-          <button class="small-btn" id="openPlayers">Player Setup</button>
-          <button class="small-btn" id="how">How to Play</button>
-          <button class="small-btn" id="musicToggle">Play Music</button>
-        </div>
+        <div class="icon-cloud" id="iconCloud" aria-hidden="false"></div>
       </div>
 
-      <div style="margin-top:14px">
-        <div class="icon-cloud" id="iconCloud" aria-hidden="false">
-          <!-- icons populated by JS -->
-        </div>
-      </div>
-
-      <div style="height:24px"></div>
-      <div style="font-size:12px;color:var(--muted)">Tip: first click anywhere starts audio & enables music (browser policy).</div>
-
-      <div class="mascot" id="mascot">AK</div>
-      <!-- floating icons (decorative) -->
-      <div class="floating f1" id="float1"><div style="width:84px;height:84px;border-radius:14px;background:linear-gradient(135deg,#ffffff06,#ffffff03);display:flex;align-items:center;justify-content:center;font-weight:800">🪐</div></div>
-      <div class="floating f2" id="float2"><div style="width:72px;height:72px;border-radius:12px;display:flex;align-items:center;justify-content:center">💾</div></div>
-      <div class="floating f3" id="float3"><div style="width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center">∑</div></div>
-      <div class="floating f4" id="float4"><div style="width:72px;height:72px;border-radius:12px;display:flex;align-items:center;justify-content:center">🎷</div></div>
-      <div class="floating f5" id="float5"><div style="width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center">🐾</div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:auto">Tip: first click anywhere enables audio (browser requirement).</div>
     </div>
 
-    <!-- RIGHT: QUIZ AREA -->
+    <!-- RIGHT: quiz -->
     <div class="right" id="right">
       <div class="topbar">
         <div class="players" id="playerStrip"></div>
-        <div class="turnIndicator" id="turnIndicator">Welcome — press a mode to start</div>
+        <div class="turnIndicator" id="turnIndicator">Welcome — pick a mode</div>
       </div>
 
       <div class="quiz-card" id="menuCard">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div style="font-weight:900">Ready to Play?</div>
-          <div style="font-size:13px;color:var(--muted)">Select a topic from left icons or cloud</div>
+          <div style="font-size:13px;color:var(--muted)">Select a topic from the icons</div>
         </div>
         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="small-btn" id="startLast">Start Last Selected</button>
@@ -135,14 +137,17 @@ html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe
       </div>
 
       <div class="quiz-card hidden" id="quizCard">
-        <div class="question" id="question">Question will appear here</div>
+        <div class="question" id="question">Question</div>
         <div class="options" id="options"></div>
         <div class="feedback" id="feedback"></div>
+
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div class="timer" id="timer">⏰ 10s</div>
           <div style="width:65%"><div class="progress"><div class="bar" id="bar"></div></div></div>
         </div>
+
         <div class="leaderboard" id="leaderboard"></div>
+
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
           <div class="achievements" id="achievements"></div>
           <div style="display:flex;gap:8px">
@@ -156,7 +161,7 @@ html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe
         <h3>Quiz Finished 🎉</h3>
         <div class="leaderboard" id="finalLeaderboard"></div>
         <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <button class="small-btn" id="backMenu">Back to Menu</button>
+          <button class="small-btn" id="backMenu">Back</button>
         </div>
       </div>
 
@@ -164,54 +169,77 @@ html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe
   </div>
 </div>
 
-<!-- AUDIO + SFX + QUIZ LOGIC -->
 <script>
-/* ========== AUDIO (soft lo-fi) ========== */
-/* Uses WebAudio, loads sample and plays when user first interacts */
-const MUSIC_URL = 'https://cdn.pixabay.com/download/audio/2022/08/06/audio_7d6076e32b.mp3?filename=calm-lofi-beat-110-bpm-124618.mp3';
-let audioCtx = null;
-let musicGain = null;
-let sfxGain = null;
-let musicBuffer = null;
-let musicSource = null;
-let musicPlaying = false;
+/* -------------------------
+   Particles (subtle background)
+   ------------------------- */
+const canvas = document.getElementById('particles');
+const shell = document.getElementById('shell');
+const ctx = canvas.getContext('2d');
+let W, H, parts = [];
+function resize(){ W = canvas.width = shell.clientWidth; H = canvas.height = shell.clientHeight; }
+window.addEventListener('resize', resize);
+resize();
 
-async function initAudio() {
-  if (audioCtx) return;
+function rand(min,max){ return Math.random()*(max-min)+min; }
+for(let i=0;i<60;i++){
+  parts.push({x: rand(0,W), y: rand(0,H), r: rand(0.6,2.2), vx: rand(-0.2,0.2), vy: rand(-0.15,-0.5), hue: rand(210,270), a: rand(0.08,0.28)});
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  parts.forEach(p=>{
+    p.x += p.vx; p.y += p.vy;
+    if(p.y < -10){ p.y = H + 10; p.x = rand(0,W); }
+    if(p.x < -10) p.x = W + 10;
+    if(p.x > W + 10) p.x = -10;
+    ctx.beginPath();
+    ctx.fillStyle = `hsla(${p.hue},60%,70%,${p.a})`;
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* -------------------------
+   Audio (soft lo-fi + SFX)
+   ------------------------- */
+const MUSIC_URL = 'https://cdn.pixabay.com/download/audio/2022/08/06/audio_7d6076e32b.mp3?filename=calm-lofi-beat-110-bpm-124618.mp3';
+let audioCtx = null, musicGain = null, sfxGain = null, musicBuf = null, musicSource = null, musicPlaying = false;
+
+async function initAudio(){
+  if(audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  sfxGain = audioCtx.createGain(); sfxGain.gain.value = 0.9;
   musicGain = audioCtx.createGain(); musicGain.gain.value = 0.8;
-  sfxGain.connect(audioCtx.destination);
+  sfxGain = audioCtx.createGain(); sfxGain.gain.value = 0.9;
   musicGain.connect(audioCtx.destination);
+  sfxGain.connect(audioCtx.destination);
   try {
-    const resp = await fetch(MUSIC_URL);
-    const arrayBuffer = await resp.arrayBuffer();
-    musicBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-  } catch (e) {
-    console.warn('Failed to load music', e);
-  }
+    const r = await fetch(MUSIC_URL);
+    const arr = await r.arrayBuffer();
+    musicBuf = await audioCtx.decodeAudioData(arr);
+  } catch(e){ console.warn('Music load failed', e); }
 }
 
-function playMusic() {
+function startMusic(){
   if(!audioCtx) initAudio();
-  if (musicSource) { musicSource.stop(); musicSource = null; }
-  if (!musicBuffer) return;
+  if(!musicBuf) return;
+  stopMusic();
   musicSource = audioCtx.createBufferSource();
-  musicSource.buffer = musicBuffer;
+  musicSource.buffer = musicBuf;
   musicSource.loop = true;
   musicSource.connect(musicGain);
   musicSource.start();
   musicPlaying = true;
   document.getElementById('musicToggle').textContent = 'Pause Music';
+  document.getElementById('musicToggle').dataset.want = 'on';
 }
 
-function stopMusic() {
-  if (musicSource) {
-    try { musicSource.stop(); } catch(e){}
-    musicSource = null;
-  }
+function stopMusic(){
+  if(musicSource){ try{ musicSource.stop(); }catch(e){} musicSource=null; }
   musicPlaying = false;
   document.getElementById('musicToggle').textContent = 'Play Music';
+  document.getElementById('musicToggle').dataset.want = 'off';
 }
 
 function playSfx(type){
@@ -219,60 +247,51 @@ function playSfx(type){
   const now = audioCtx.currentTime;
   if(type==='click'){
     const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type='triangle'; o.frequency.value = 600; g.gain.value = 0.0001;
+    o.type = 'triangle'; o.frequency.value = 640;
     o.connect(g); g.connect(sfxGain);
-    g.gain.linearRampToValueAtTime(0.06, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.2);
-    o.start(now); o.stop(now+0.2);
+    g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(0.06, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.22);
+    o.start(now); o.stop(now+0.22);
   } else if(type==='correct'){
-    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(sfxGain);
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type='sine'; o.frequency=880; o.connect(g); g.connect(sfxGain);
     g.gain.linearRampToValueAtTime(0.12, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.5);
     o.start(now); o.stop(now+0.5);
   } else if(type==='wrong'){
-    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.type='sawtooth'; o.frequency.value=160; o.connect(g); g.connect(sfxGain);
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type='sawtooth'; o.frequency=160; o.connect(g); g.connect(sfxGain);
     g.gain.linearRampToValueAtTime(0.08, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.4);
     o.start(now); o.stop(now+0.4);
   } else if(type==='win'){
-    [660,880,990].forEach((n,i)=>{ const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='sine'; o.frequency.value=n; o.connect(g); g.connect(sfxGain); const t = now + i*0.08; g.gain.linearRampToValueAtTime(0.12, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+0.42); o.start(t); o.stop(t+0.5); });
+    [660,880,990].forEach((n,i)=>{ const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='sine'; o.frequency=n; o.connect(g); g.connect(sfxGain); const t = now + i*0.08; g.gain.linearRampToValueAtTime(0.12, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+0.42); o.start(t); o.stop(t+0.6); });
   }
 }
 
-/* start audio on first user interaction (satisfies autoplay policy) */
-function enableAudioOnFirstInteraction(){
-  const start = async () => {
-    await initAudio();
-    // start music only if toggle was turned on earlier
-    if(document.getElementById('musicToggle').dataset.want==='on') playMusic();
-    document.removeEventListener('pointerdown', start);
-  };
-  document.addEventListener('pointerdown', start, {once:true});
-}
-enableAudioOnFirstInteraction();
+/* ensure audio is enabled after the first user gesture (autoplay policy) */
+document.addEventListener('pointerdown', async function enableAudioOnce(){
+  await initAudio();
+  // if user pressed the Play Music button (dataset.want === 'on') we already start on that click
+  if(document.getElementById('musicToggle').dataset.want === 'on' && !musicPlaying){
+    startMusic();
+  }
+  document.removeEventListener('pointerdown', enableAudioOnce);
+});
 
-/* ========== UI wiring ========== */
-const soloBtn = document.getElementById('soloBtn');
-const multiBtn = document.getElementById('multiBtn');
-const openPlayers = document.getElementById('openPlayers');
-const howBtn = document.getElementById('how');
-const musicToggle = document.getElementById('musicToggle');
+/* hook music toggle button */
+document.getElementById('musicToggle').addEventListener('click', async (e)=>{
+  await initAudio();
+  if(!musicPlaying){
+    startMusic();
+    playSfx('click');
+  } else {
+    stopMusic();
+    playSfx('click');
+  }
+});
+
+/* -------------------------
+   UI wiring + Gamemodes
+   ------------------------- */
 const iconCloud = document.getElementById('iconCloud');
-const playerStrip = document.getElementById('playerStrip');
-const modes = document.getElementById('modes');
-const menuCard = document.getElementById('menuCard');
-const quizCard = document.getElementById('quizCard');
-const endCard = document.getElementById('endCard');
-const startLast = document.getElementById('startLast');
-const resetBtn = document.getElementById('resetBtn');
-const viewScores = document.getElementById('viewScores');
-const backMenu = document.getElementById('backMenu');
-
-let selectedGamemode = 'akit';
-let players = []; // {name,score,combo}
-let mode = 'solo'; // or multi
-let lastSelected = 'akit';
-
-/* gamemode icons */
 const GAMEMODES = [
   {id:'akit',emoji:'🧠',label:'AKit'},
   {id:'planet',emoji:'🪐',label:'Planet'},
@@ -282,97 +301,67 @@ const GAMEMODES = [
   {id:'animals',emoji:'🐾',label:'Animals'},
   {id:'trivia',emoji:'❓',label:'Trivia'}
 ];
-
+let selectedGamemode = 'akit';
+let lastSelected = 'akit';
 GAMEMODES.forEach(g=>{
-  const el = document.createElement('div');
-  el.className = 'icon-card';
-  el.innerHTML = `<div style="font-size:28px">${g.emoji}</div><div style="font-size:12px;color:var(--muted);margin-top:6px">${g.label}</div>`;
-  el.onclick = ()=>{ selectGamemode(g.id); lastSelected = g.id; openMenu(); playSfx('click'); };
-  iconCloud.appendChild(el);
-});
-
-/* floating icons clickable (decorative ones) */
-document.querySelectorAll('.floating').forEach(f=>{
-  f.addEventListener('click', ()=>{ /* decorative click — open gamemode by mapping position */
-    const mapping = {'float1':'planet','float2':'tech','float3':'math','float4':'music','float5':'animals'};
-    const gid = mapping[f.id];
-    if(gid){ selectGamemode(gid); lastSelected = gid; openMenu(); playSfx('click'); }
-  });
-});
-
-/* MODE BUTTONS */
-soloBtn.addEventListener('click', ()=>{ mode='solo'; openPlayerSetup(); playSfx('click'); });
-multiBtn.addEventListener('click', ()=>{ mode='multi'; openPlayerSetup(); playSfx('click'); });
-
-openPlayers.addEventListener('click', ()=>{ openPlayerSetup(); playSfx('click'); });
-howBtn.addEventListener('click', ()=>{ alert('Take turns answering. Correct answers build combos. Solo: answer all questions. Multiplayer: players take turns.'); });
-
-musicToggle.addEventListener('click', async ()=>{
-  if(!audioCtx) await initAudio(); // ensure audio ready
-  if(!musicPlaying){
-    playMusic();
-    musicToggle.dataset.want = 'on';
+  const node = document.createElement('div');
+  node.className = 'icon-card';
+  node.innerHTML = `<div class="icon-emoji">${g.emoji}</div><div class="icon-label">${g.label}</div>`;
+  node.onclick = ()=>{
+    selectedGamemode = g.id; lastSelected = g.id;
+    document.getElementById('turnIndicator').textContent = 'Selected: ' + g.label;
     playSfx('click');
-  } else {
-    stopMusic();
-    musicToggle.dataset.want = 'off';
-    playSfx('click');
-  }
+  };
+  iconCloud.appendChild(node);
 });
 
-/* player setup panel implementation using prompt-based inputs (keeps UI minimal & reliable) */
+/* buttons */
+document.getElementById('soloBtn').addEventListener('click', ()=>{ mode = 'solo'; openPlayerSetup(); playSfx('click'); });
+document.getElementById('multiBtn').addEventListener('click', ()=>{ mode = 'multi'; openPlayerSetup(); playSfx('click'); });
+document.getElementById('openPlayers').addEventListener('click', ()=>{ openPlayerSetup(); playSfx('click'); });
+document.getElementById('how').addEventListener('click', ()=>{ alert('Take turns answering questions. Correct answers build combos. Solo: answer through entire quiz. Multiplayer: players take turns.'); });
+document.getElementById('startLast').addEventListener('click', ()=>{ if(players.length===0){ alert('Please set up players first (Player Setup).'); return; } startQuiz(); });
+document.getElementById('resetBtn').addEventListener('click', ()=>{ players = []; renderPlayers(); playSfx('click'); menuCard.scrollIntoView({behavior:'smooth'}); });
+document.getElementById('viewScores').addEventListener('click', ()=>{ alert('Scores: ' + (players.map(p=>p.name+': '+p.score).join(', ') || 'none')); });
+document.getElementById('backMenu').addEventListener('click', ()=>{ menuReturn(); });
+
+/* Player setup (simple modal prompts so UI stays clean & reliable) */
+let mode = 'solo'; // 'solo' | 'multi'
+let players = []; // {name,score,combo}
+
 function openPlayerSetup(){
-  // simple modal-like prompt sequence to set names (keeps DOM minimal and avoids layout issues)
-  if(mode==='solo'){
-    const name = prompt('Enter your name (solo):','Player');
-    if(!name) return;
-    players = [{name: name.trim(), score:0, combo:0}];
+  if(mode === 'solo'){
+    const n = prompt('Enter your name (solo):', 'Player');
+    if(!n) return;
+    players = [{name:n.trim(), score:0, combo:0}];
   } else {
     const names = [];
     for(let i=1;i<=4;i++){
-      const v = prompt(`Player ${i} name (leave blank to skip):`, i===1 ? 'Player 1' : '');
+      const v = prompt(`Player ${i} name (leave blank to skip):`, i===1?'Player 1':'');
       if(v && v.trim()) names.push({name:v.trim(),score:0,combo:0});
     }
     if(names.length < 2){ alert('Need at least 2 players for multiplayer.'); return; }
     players = names;
   }
   renderPlayers();
-  menuCard.scrollIntoView({behavior:'smooth'});
+  playSfx('click');
 }
 
-/* render top player strip */
+/* render top players strip */
 function renderPlayers(){
-  playerStrip.innerHTML='';
+  const strip = document.getElementById('playerStrip');
+  strip.innerHTML = '';
   players.forEach(p=>{
     const el = document.createElement('div');
     el.className = 'player-pill';
     el.textContent = p.name;
-    playerStrip.appendChild(el);
+    strip.appendChild(el);
   });
 }
 
-/* open menu (right area) */
-function openMenu(){
-  menuCard.style.display = 'block';
-  quizCard.classList.add('hidden');
-  endCard.classList.add('hidden');
-  document.getElementById('turnIndicator').textContent = 'Selected: ' + (selectedGamemode.charAt(0).toUpperCase()+selectedGamemode.slice(1));
-}
-
-/* select gamemode */
-function selectGamemode(id){
-  selectedGamemode = id;
-  document.getElementById('turnIndicator').textContent = 'Selected: ' + id;
-}
-
-/* header buttons */
-startLast.addEventListener('click', ()=>{ if(!players || players.length===0){ alert('Please set up players first.'); return; } startQuiz(); });
-resetBtn.addEventListener('click', ()=>{ players=[]; renderPlayers(); menuCard.scrollIntoView({behavior:'smooth'}); playSfx('click'); });
-viewScores.addEventListener('click', ()=>{ alert('Scores: ' + (players.map(p=>p.name+': '+p.score).join(', ') || 'none')); });
-
-backMenu.addEventListener('click', ()=>{ menuCard.style.display = 'block'; quizCard.classList.add('hidden'); endCard.classList.add('hidden'); players=[]; renderPlayers(); });
-
-/* ========== QUIZ LOGIC (same as before, but robust hookup) ========== */
+/* -------------------------
+   Full quiz bank (unchanged)
+   ------------------------- */
 const allQuestions = {
   akit:[{q:'What is the capital of France?',a:['Paris','London','Berlin','Madrid'],correct:0},{q:'2 + 2 × 2 = ?',a:['6','8','4','2'],correct:0},{q:'Who created AKit?',a:['Adam','Elon Musk','Bill Gates','Adam & Alex'],correct:3},{q:'Which language runs in a web browser?',a:['Python','C++','JavaScript','Java'],correct:2},{q:'Which is not a JS framework?',a:['React','Vue','Python','Angular'],correct:2},{q:'AKit is primarily for?',a:['Games','Quizzes','Photos','Videos'],correct:1},{q:'HTML stands for?',a:['HyperText Markup Language','HighText Main Language','Hyper Trainer Markup','None'],correct:0},{q:'AKit logo color?',a:['Blue','Red','Green','Yellow'],correct:0},{q:'2³ = ?',a:['6','8','9','12'],correct:1},{q:'Bonus fact about AKit?',a:['Made in 2025','Created by Adam & Alex','Open Source','Mobile App'],correct:1}],
   planet:[{q:'Which planet is known as the Red Planet?',a:['Mars','Venus','Jupiter','Mercury'],correct:0},{q:'Largest planet in Solar System?',a:['Earth','Jupiter','Saturn','Neptune'],correct:1},{q:'Planet with rings?',a:['Mars','Saturn','Jupiter','Earth'],correct:1},{q:'Which planet is closest to Sun?',a:['Mercury','Venus','Earth','Mars'],correct:0},{q:'Blue planet?',a:['Mars','Venus','Earth','Neptune'],correct:2},{q:'Planet for largest volcano?',a:['Mars','Jupiter','Earth','Saturn'],correct:0},{q:'Which planet rotates backward?',a:['Venus','Earth','Uranus','Mars'],correct:0},{q:'Planet with shortest day?',a:['Jupiter','Saturn','Mercury','Mars'],correct:0},{q:'Furthest planet?',a:['Neptune','Pluto','Uranus','Saturn'],correct:0},{q:'Gas giant with rings?',a:['Jupiter','Saturn','Uranus','Neptune'],correct:1}],
@@ -383,76 +372,65 @@ const allQuestions = {
   music:[{q:'Which instrument has valves?',a:['Trumpet','Saxophone','Guitar','Piano'],correct:0},{q:'Which instrument is woodwind?',a:['Trumpet','Saxophone','Drums','Violin'],correct:1},{q:'Which instrument is brass?',a:['Trombone','Saxophone','Flute','Drum'],correct:0},{q:'Trumpet belongs to which family?',a:['Brass','String','Percussion','Woodwind'],correct:0},{q:'Saxophone belongs to which family?',a:['Brass','Woodwind','Percussion','String'],correct:1}]
 };
 
-/* gameplay state */
-let questions = [], qIndex = 0, timer = 10, timerInterval = null, currentPlayerIndex = 0;
-
-/* quiz DOM refs */
+/* -------------------------
+   Quiz gameplay state
+   ------------------------- */
+let qList = [], qIndex = 0, timer = 10, timerInterval = null, currentPlayerIndex = 0;
 const questionEl = document.getElementById('question');
 const optionsEl = document.getElementById('options');
 const feedbackEl = document.getElementById('feedback');
 const timerEl = document.getElementById('timer');
-const barEl = document.getElementById('bar');
+const bar = document.getElementById('bar');
 const leaderboardEl = document.getElementById('leaderboard');
 const achievementsEl = document.getElementById('achievements');
 const nextBtn = document.getElementById('nextBtn');
 
-/* start quiz flow */
 function startQuiz(){
-  // pick selected gamemode (default lastSelected)
   const gm = lastSelected || selectedGamemode || 'akit';
-  questions = JSON.parse(JSON.stringify(allQuestions[gm] || allQuestions.akit));
+  qList = JSON.parse(JSON.stringify(allQuestions[gm] || allQuestions.akit));
   qIndex = 0; currentPlayerIndex = 0;
-  players.forEach(p=>{ p.score=0; p.combo=0; });
-  menuCard.classList.add('hidden');
-  quizCard.classList.remove('hidden');
-  endCard.classList.add('hidden');
+  players.forEach(p=>{p.score=0;p.combo=0});
+  document.getElementById('menuCard').classList.add('hidden');
+  document.getElementById('quizCard').classList.remove('hidden');
+  document.getElementById('endCard').classList.add('hidden');
   showQuestion();
   playSfx('click');
 }
 
 function showQuestion(){
-  const q = questions[qIndex];
+  const q = qList[qIndex];
   questionEl.textContent = q.q;
   optionsEl.innerHTML = '';
   q.a.forEach((opt,i)=>{
     const b = document.createElement('button');
     b.className = 'option-btn';
     b.textContent = opt;
-    b.onclick = ()=>selectAnswer(i);
+    b.onclick = ()=> selectAnswer(i);
     optionsEl.appendChild(b);
   });
   feedbackEl.textContent = '';
-  feedbackEl.classList.remove('show');
-  timer = 10; updateTimer(); barEl.style.width = '100%';
+  timer = 10; timerEl.textContent = '⏰ '+timer+'s'; bar.style.width='100%';
   clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    timer--; updateTimer(); barEl.style.width = ((timer/10)*100)+'%';
-    if(timer <= 0){ clearInterval(timerInterval); selectAnswer(-1); }
-  },1000);
-  document.getElementById('turnIndicator').textContent = (mode==='solo') ? 'Solo Mode' : 'Turn: ' + players[currentPlayerIndex].name;
-  nextBtn.style.display = 'none';
+  timerInterval = setInterval(()=>{ timer--; timerEl.textContent = '⏰ '+timer+'s'; bar.style.width = ((timer/10)*100)+'%'; if(timer<=0){ clearInterval(timerInterval); selectAnswer(-1); } },1000);
+  document.getElementById('turnIndicator').textContent = (mode==='solo') ? 'Solo Mode' : 'Turn: '+players[currentPlayerIndex].name;
+  nextBtn.style.display='none';
   updateLeaderboard();
 }
 
-function updateTimer(){ timerEl.textContent = '⏰ ' + timer + 's'; timerEl.style.color = (timer<=3 ? '#ff7676' : '#fff'); }
-
 function selectAnswer(choice){
   clearInterval(timerInterval);
-  const q = questions[qIndex];
+  const q = qList[qIndex];
   const cur = players[currentPlayerIndex];
   const correct = q.correct === choice;
   if(correct){
     feedbackEl.textContent = '✅ Correct!';
-    feedbackEl.classList.add('show');
     cur.combo++; cur.score += 10 * cur.combo;
-    playSfx('correct'); smallConfetti();
+    playSfx('correct'); miniConfetti();
   } else {
     feedbackEl.textContent = '❌ Wrong! Correct: ' + q.a[q.correct];
-    feedbackEl.classList.add('show');
-    cur.combo = 0;
-    playSfx('wrong');
+    cur.combo = 0; playSfx('wrong');
   }
-  achievementsEl.textContent = (cur.combo>=3 ? '🔥 Combo x'+cur.combo : '') + (cur.score>=50 ? ' 🏆 '+cur.score+'pts' : '');
+  achievementsEl.textContent = (cur.combo>=3 ? '🔥 Combo x'+cur.combo : '') + (cur.score>=50 ? ' 🏆 '+cur.score+' pts' : '');
   nextBtn.style.display = 'inline-block';
   nextBtn.onclick = nextHandler;
   updateLeaderboard();
@@ -460,7 +438,7 @@ function selectAnswer(choice){
 
 function nextHandler(){
   qIndex++;
-  if(qIndex >= questions.length){ endQuiz(); return; }
+  if(qIndex >= qList.length){ endQuiz(); return; }
   if(mode === 'multi'){ currentPlayerIndex = (currentPlayerIndex + 1) % players.length; }
   showQuestion();
 }
@@ -473,46 +451,43 @@ function updateLeaderboard(){
 }
 
 function endQuiz(){
-  quizCard.classList.add('hidden');
-  endCard.classList.remove('hidden');
+  document.getElementById('quizCard').classList.add('hidden');
+  document.getElementById('endCard').classList.remove('hidden');
   const final = document.getElementById('finalLeaderboard');
   final.innerHTML = '';
-  players.sort((a,b)=>b.score-a.score).forEach(p => { const r = document.createElement('div'); r.className='lb-row'; r.textContent = p.name + ' • ' + p.score + ' pts'; final.appendChild(r); });
-  playSfx('win');
-  confetti();
+  players.sort((a,b)=>b.score-a.score).forEach(p=>{ const r = document.createElement('div'); r.className='lb-row'; r.textContent = p.name + ' • ' + p.score + ' pts'; final.appendChild(r); });
+  playSfx('win'); confetti();
 }
 
-/* confetti simple */
-function smallConfetti(){
-  const el = document.createElement('div'); el.style.position='absolute'; el.style.left='50%'; el.style.top='20%'; el.style.transform='translate(-50%,-50%)'; el.style.fontSize='28px'; el.textContent='🎊';
-  document.getElementById('shell').appendChild(el);
-  setTimeout(()=>el.remove(),900);
+/* small confetti animation */
+function miniConfetti(){
+  const el = document.createElement('div'); el.style.position='absolute'; el.style.left='50%'; el.style.top='18%'; el.style.transform='translate(-50%,-50%)'; el.style.fontSize='28px'; el.textContent='🎊';
+  shell.appendChild(el); setTimeout(()=>el.remove(),900);
 }
 function confetti(){
-  const el = document.createElement('div'); el.style.position='absolute'; el.style.left='50%'; el.style.top='20%'; el.style.transform='translate(-50%,-50%)'; el.style.fontSize='48px'; el.textContent='🎉🎉🎉';
-  document.getElementById('shell').appendChild(el);
-  setTimeout(()=>el.remove(),1400);
+  const el = document.createElement('div'); el.style.position='absolute'; el.style.left='50%'; el.style.top='18%'; el.style.transform='translate(-50%,-50%)'; el.style.fontSize='48px'; el.textContent='🎉🎉🎉';
+  shell.appendChild(el); setTimeout(()=>el.remove(),1400);
 }
 
-/* small keyboard shortcuts */
-window.addEventListener('keydown', (e)=>{ if(e.key==='m'){ musicToggle.click(); } if(e.key==='s'){ playSfx('click'); } });
+/* back to menu */
+document.getElementById('backMenu').addEventListener('click', menuReturn);
+function menuReturn(){
+  document.getElementById('menuCard').classList.remove('hidden');
+  document.getElementById('quizCard').classList.add('hidden');
+  document.getElementById('endCard').classList.add('hidden');
+  players = []; renderPlayers();
+}
 
-/* expose some helper actions to console if needed */
-window._akit = { startQuiz, selectGamemode };
+/* initial UI state */
+document.getElementById('menuCard').style.display = 'block';
+document.getElementById('quizCard').classList.add('hidden');
+document.getElementById('endCard').classList.add('hidden');
 
-/* Ensure page starts with menu visible */
-menuCard.style.display = 'block';
-quizCard.classList.add('hidden');
-endCard.classList.add('hidden');
+/* keyboard shortcuts */
+window.addEventListener('keydown',(e)=>{ if(e.key==='m') document.getElementById('musicToggle').click(); if(e.key==='s') playSfx('click'); });
 
-/* Exportability: let UI know to attempt audio on first click */
-document.addEventListener('pointerdown', async function initOnce(){
-  if(!audioCtx) await initAudio();
-  document.removeEventListener('pointerdown', initOnce);
-});
-
-/* Simple initial selection */
-selectGamemode('akit');
+/* expose for debug in console */
+window._akit = { startQuiz, selectGamemode: (m)=>{ selectedGamemode=m; lastSelected=m; } };
 </script>
 </body>
 </html>
